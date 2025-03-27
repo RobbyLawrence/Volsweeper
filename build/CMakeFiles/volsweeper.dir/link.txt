@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/volsweeper.dir/src/volsweeper.cpp.o -o /home/rlawren9/COSC-302/projects/Minesweeper/bin/volsweeper 
+/usr/bin/c++ CMakeFiles/volsweeper.dir/src/volsweeper.cpp.o -o /home/rlawren9/COSC-302/projects/Volsweeper/bin/volsweeper 

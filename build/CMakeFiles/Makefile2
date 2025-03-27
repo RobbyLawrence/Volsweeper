@@ -54,10 +54,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/rlawren9/COSC-302/projects/Minesweeper
+CMAKE_SOURCE_DIR = /home/rlawren9/COSC-302/projects/Volsweeper
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/rlawren9/COSC-302/projects/Minesweeper/build
+CMAKE_BINARY_DIR = /home/rlawren9/COSC-302/projects/Volsweeper/build
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -81,14 +81,14 @@ clean: CMakeFiles/volsweeper.dir/clean
 CMakeFiles/volsweeper.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/rlawren9/COSC-302/projects/Minesweeper/build/CMakeFiles --progress-num=1,2 "Built target volsweeper"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/rlawren9/COSC-302/projects/Volsweeper/build/CMakeFiles --progress-num=1,2 "Built target volsweeper"
 .PHONY : CMakeFiles/volsweeper.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/volsweeper.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/rlawren9/COSC-302/projects/Minesweeper/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/rlawren9/COSC-302/projects/Volsweeper/build/CMakeFiles 2
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/volsweeper.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/rlawren9/COSC-302/projects/Minesweeper/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/rlawren9/COSC-302/projects/Volsweeper/build/CMakeFiles 0
 .PHONY : CMakeFiles/volsweeper.dir/rule
 
 # Convenience name for target.

@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/rlawren9/COSC-302/projects/Minesweeper/include
+CXX_INCLUDES = -I/home/rlawren9/COSC-302/projects/Volsweeper/include
 
 CXX_FLAGS = -std=gnu++17
 
