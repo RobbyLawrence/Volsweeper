@@ -1,0 +1,8 @@
+###
+1. this will be a project that creates the game minesweeper and a bot that is written with an algorithm that can complete a game of minesweeper. 
+ 
+ - board needs to be built
+ - game logic
+
+ - bot 
+ - bot logic
