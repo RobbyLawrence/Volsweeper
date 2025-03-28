@@ -1,7 +1,14 @@
 ###
+
 1. this will be a project that creates the game minesweeper and a bot that is written with an algorithm that can complete a game of minesweeper. 
  
  - board needs to be built
+
+ - the goals for the board are as follows: we'd like for the board to be solvable without any guessing; that is, we should be able to deterministically
+ solve the minesweeper game following a set of patterns and rules. The easiest way to do this is to build a bot that can solve Minesweeper by applying a
+ set of patterns. So these two goals are deeply intertwined. (current progress: I (robby) have implemented a random board, but haven't implemented any rules
+ that eliminate the possibilites of 9's and 8's).
+
  - game logic
 
  - bot 
