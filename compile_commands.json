@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/rlawren9/COSC-302/projects/Volsweeper/build",
+  "command": "/usr/bin/c++  -I/home/rlawren9/COSC-302/projects/Volsweeper/include -std=gnu++17 -o CMakeFiles/volsweeper.dir/src/game.cpp.o -c /home/rlawren9/COSC-302/projects/Volsweeper/src/game.cpp",
+  "file": "/home/rlawren9/COSC-302/projects/Volsweeper/src/game.cpp",
+  "output": "CMakeFiles/volsweeper.dir/src/game.cpp.o"
+},
+{
+  "directory": "/home/rlawren9/COSC-302/projects/Volsweeper/build",
+  "command": "/usr/bin/c++  -I/home/rlawren9/COSC-302/projects/Volsweeper/include -std=gnu++17 -o CMakeFiles/volsweeper.dir/src/volsweeper.cpp.o -c /home/rlawren9/COSC-302/projects/Volsweeper/src/volsweeper.cpp",
+  "file": "/home/rlawren9/COSC-302/projects/Volsweeper/src/volsweeper.cpp",
+  "output": "CMakeFiles/volsweeper.dir/src/volsweeper.cpp.o"
+}
+]

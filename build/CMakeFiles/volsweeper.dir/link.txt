@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/volsweeper.dir/src/game.cpp.o CMakeFiles/volsweeper.dir/src/volsweeper.cpp.o -o /home/rlawren9/COSC-302/projects/Volsweeper/bin/volsweeper 
+/Library/Developer/CommandLineTools/usr/bin/c++  -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/volsweeper.dir/src/game.cpp.o CMakeFiles/volsweeper.dir/src/volsweeper.cpp.o -o /Users/robertlawrence/Volsweeper/bin/volsweeper

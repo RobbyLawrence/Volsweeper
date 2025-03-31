@@ -1,4 +1,5 @@
 #include "volsweeper.hpp"
+#include <string>
 #include <vector>
 #include <iostream>
 #include <algorithm>
