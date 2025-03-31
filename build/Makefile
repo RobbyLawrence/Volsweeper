@@ -129,6 +129,30 @@ volsweeper/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/build
 .PHONY : volsweeper/fast
 
+src/game.o: src/game.cpp.o
+.PHONY : src/game.o
+
+# target to build an object file
+src/game.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/src/game.cpp.o
+.PHONY : src/game.cpp.o
+
+src/game.i: src/game.cpp.i
+.PHONY : src/game.i
+
+# target to preprocess a source file
+src/game.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/src/game.cpp.i
+.PHONY : src/game.cpp.i
+
+src/game.s: src/game.cpp.s
+.PHONY : src/game.s
+
+# target to generate assembly for a file
+src/game.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/src/game.cpp.s
+.PHONY : src/game.cpp.s
+
 src/volsweeper.o: src/volsweeper.cpp.o
 .PHONY : src/volsweeper.o
 
@@ -162,6 +186,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... volsweeper"
+	@echo "... src/game.o"
+	@echo "... src/game.i"
+	@echo "... src/game.s"
 	@echo "... src/volsweeper.o"
 	@echo "... src/volsweeper.i"
 	@echo "... src/volsweeper.s"
