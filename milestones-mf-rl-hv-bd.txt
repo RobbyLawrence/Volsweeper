@@ -10,6 +10,11 @@
  that eliminate the possibilites of 9's and 8's).
 
  - game logic
-
  - bot 
  - bot logic
+
+	the bot logic will be based off of being given patterns that it will be able to identify very quickly and solve the minesweeper
+	puzzle on its own in very little time.
+
+	We will be implementing the patterns shown in the minesweeper online handbook posted here. https://minesweeper.online/help/patterns. 
+
