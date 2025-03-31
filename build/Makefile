@@ -129,6 +129,43 @@ volsweeper/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/build
 .PHONY : volsweeper/fast
 
+#=============================================================================
+# Target rules for targets named botV1
+
+# Build rule for target.
+botV1: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 botV1
+.PHONY : botV1
+
+# fast build rule for target.
+botV1/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/build
+.PHONY : botV1/fast
+
+src/botV1.o: src/botV1.cpp.o
+.PHONY : src/botV1.o
+
+# target to build an object file
+src/botV1.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/src/botV1.cpp.o
+.PHONY : src/botV1.cpp.o
+
+src/botV1.i: src/botV1.cpp.i
+.PHONY : src/botV1.i
+
+# target to preprocess a source file
+src/botV1.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/src/botV1.cpp.i
+.PHONY : src/botV1.cpp.i
+
+src/botV1.s: src/botV1.cpp.s
+.PHONY : src/botV1.s
+
+# target to generate assembly for a file
+src/botV1.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/src/botV1.cpp.s
+.PHONY : src/botV1.cpp.s
+
 src/game.o: src/game.cpp.o
 .PHONY : src/game.o
 
@@ -159,6 +196,7 @@ src/volsweeper.o: src/volsweeper.cpp.o
 # target to build an object file
 src/volsweeper.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/src/volsweeper.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/src/volsweeper.cpp.o
 .PHONY : src/volsweeper.cpp.o
 
 src/volsweeper.i: src/volsweeper.cpp.i
@@ -167,6 +205,7 @@ src/volsweeper.i: src/volsweeper.cpp.i
 # target to preprocess a source file
 src/volsweeper.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/src/volsweeper.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/src/volsweeper.cpp.i
 .PHONY : src/volsweeper.cpp.i
 
 src/volsweeper.s: src/volsweeper.cpp.s
@@ -175,6 +214,7 @@ src/volsweeper.s: src/volsweeper.cpp.s
 # target to generate assembly for a file
 src/volsweeper.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/src/volsweeper.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/src/volsweeper.cpp.s
 .PHONY : src/volsweeper.cpp.s
 
 # Help Target
@@ -185,7 +225,11 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... botV1"
 	@echo "... volsweeper"
+	@echo "... src/botV1.o"
+	@echo "... src/botV1.i"
+	@echo "... src/botV1.s"
 	@echo "... src/game.o"
 	@echo "... src/game.i"
 	@echo "... src/game.s"

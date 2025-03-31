@@ -64,10 +64,12 @@ CMAKE_BINARY_DIR = /Users/robertlawrence/Volsweeper/build
 
 # The main recursive "all" target.
 all: CMakeFiles/volsweeper.dir/all
+all: CMakeFiles/botV1.dir/all
 .PHONY : all
 
 # The main recursive "codegen" target.
 codegen: CMakeFiles/volsweeper.dir/codegen
+codegen: CMakeFiles/botV1.dir/codegen
 .PHONY : codegen
 
 # The main recursive "preinstall" target.
@@ -76,6 +78,7 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/volsweeper.dir/clean
+clean: CMakeFiles/botV1.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -85,7 +88,7 @@ clean: CMakeFiles/volsweeper.dir/clean
 CMakeFiles/volsweeper.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/robertlawrence/Volsweeper/build/CMakeFiles --progress-num=1,2,3 "Built target volsweeper"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/robertlawrence/Volsweeper/build/CMakeFiles --progress-num=4,5,6 "Built target volsweeper"
 .PHONY : CMakeFiles/volsweeper.dir/all
 
 # Build rule for subdir invocation for target.
@@ -102,13 +105,45 @@ volsweeper: CMakeFiles/volsweeper.dir/rule
 # codegen rule for target.
 CMakeFiles/volsweeper.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/robertlawrence/Volsweeper/build/CMakeFiles --progress-num=1,2,3 "Finished codegen for target volsweeper"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/robertlawrence/Volsweeper/build/CMakeFiles --progress-num=4,5,6 "Finished codegen for target volsweeper"
 .PHONY : CMakeFiles/volsweeper.dir/codegen
 
 # clean rule for target.
 CMakeFiles/volsweeper.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/volsweeper.dir/build.make CMakeFiles/volsweeper.dir/clean
 .PHONY : CMakeFiles/volsweeper.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/botV1.dir
+
+# All Build rule for target.
+CMakeFiles/botV1.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/robertlawrence/Volsweeper/build/CMakeFiles --progress-num=1,2,3 "Built target botV1"
+.PHONY : CMakeFiles/botV1.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/botV1.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/robertlawrence/Volsweeper/build/CMakeFiles 3
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/botV1.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/robertlawrence/Volsweeper/build/CMakeFiles 0
+.PHONY : CMakeFiles/botV1.dir/rule
+
+# Convenience name for target.
+botV1: CMakeFiles/botV1.dir/rule
+.PHONY : botV1
+
+# codegen rule for target.
+CMakeFiles/botV1.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/robertlawrence/Volsweeper/build/CMakeFiles --progress-num=1,2,3 "Finished codegen for target botV1"
+.PHONY : CMakeFiles/botV1.dir/codegen
+
+# clean rule for target.
+CMakeFiles/botV1.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/botV1.dir/build.make CMakeFiles/botV1.dir/clean
+.PHONY : CMakeFiles/botV1.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

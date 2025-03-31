@@ -17,3 +17,7 @@ include_directories(include)
 add_executable(volsweeper
     src/game.cpp
     src/volsweeper.cpp)
+
+add_executable(botV1
+    src/botV1.cpp
+    src/volsweeper.cpp)

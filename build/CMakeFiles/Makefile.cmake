@@ -139,4 +139,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/volsweeper.dir/DependInfo.cmake"
+  "CMakeFiles/botV1.dir/DependInfo.cmake"
   )
