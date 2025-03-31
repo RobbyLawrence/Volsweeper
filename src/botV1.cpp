@@ -3,29 +3,6 @@
 #include "volsweeper.hpp"
 #include <iostream>
 
-int main(int argc, char* argv[]) {
-    
-	if (argc != 4) {
-        std::cerr << "usage: ./volsweeper [FLAG] [SIZE] [NUM_MINES]\n";
-        return 1;
-    }
-    
-	int size = std::stoi(argv[2]);
-    int num_mines = std::stoi(argv[3]);
-
-    Minefield field(argv[1], size, num_mines);
-	//Initial State
-    field.output_field();
-
-    // Run pattern recognition to mark obvious mines
-    pattern_recognition(field);
-
-    std::cout << "\nAfter marking mines:\n";
-    field.output_field();  // Updated state
-
-    return 0;
-}
-
 std::vector<std::pair<int, int>> get_unopened_neighbors(const Minefield& field, int i, int j) {
     std::vector<std::pair<int, int>> neighbors;
     for (int x = -1; x <= 1; x++) {
@@ -92,3 +69,25 @@ void pattern_recognition(Minefield& field) {
 //1-2-2-1
 //
 
+int main(int argc, char* argv[]) {
+
+	if (argc != 4) {
+        std::cerr << "usage: ./volsweeper [FLAG] [SIZE] [NUM_MINES]\n";
+        return 1;
+    }
+
+	int size = std::stoi(argv[2]);
+    int num_mines = std::stoi(argv[3]);
+
+    Minefield field(argv[1], size, num_mines);
+	//Initial State
+    field.output_field();
+
+    // Run pattern recognition to mark obvious mines
+    pattern_recognition(field);
+
+    std::cout << "\nAfter marking mines:\n";
+    field.output_field();  // Updated state
+
+    return 0;
+}
