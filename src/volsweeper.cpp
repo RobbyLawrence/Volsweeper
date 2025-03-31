@@ -1,6 +1,7 @@
 #include "volsweeper.hpp"
 #include <string>
 #include <vector>
+#include <sstream>
 #include <iostream>
 #include <algorithm>
 
@@ -133,4 +134,19 @@ void Minefield::output_field() { // output the grid of a minefield object
         }
         std::cout << '\n';
     }
+}
+
+std::string Minefield::output_string() {
+    std::stringstream ss;
+    for (std::vector<int> vect : grid) {
+        for (int entry : vect) {
+            if (entry == -1) {
+                ss << 'M' << "  ";
+                continue;
+            }
+            ss << entry << "  ";
+        }
+        ss << '\n';
+    }
+    return ss.str();
 }
