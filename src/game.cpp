@@ -28,6 +28,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     Minefield field = Minefield(argv[1],size,num_mines);
-    field.output_field();
+    std::cout << field.output_string();
     return 0;
 }

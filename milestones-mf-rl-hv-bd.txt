@@ -14,7 +14,13 @@
     * this checked our idea of creating a gui for our game to be played. 
     * this challenge went great because it allowed us to focus on different parts of a project and learn develop our skills in working on a growing program with multiple people and not have a bunch of disorgaized files.  
 
-- game logic
 
+ - game logic
  - bot 
  - bot logic
+
+	the bot logic will be based off of being given patterns that it will be able to identify very quickly and solve the minesweeper
+	puzzle on its own in very little time.
+
+	We will be implementing the patterns shown in the minesweeper online handbook posted here. https://minesweeper.online/help/patterns. 
+
