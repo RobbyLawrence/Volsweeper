@@ -50,40 +50,38 @@ struct Minefield {
                 grid[(int)(i / size)][i % size] = -1;
             }
             // the grid is now filled with mines, and we want to update the squares close to it.
+            // we'll only update the squares that are adjacent to mines
             for (int i = 0;i<size;i++) {
                 for (int j = 0;j<size;j++) {
-                    if (grid[i][j] == -1) {
+                    if (i == 0 && j == 0 && grid[i][j] == -1) { // top left corner is mine
+
                         continue;
                     }
-                    if (i == 0 && j == 0) { // top left corner
+                    if (i == 0 && j == size - 1 && grid[i][j]) { // top right corner is mine
                         // process
                         continue;
                     }
-                    if (i == 0 && j == size - 1) { // top right corner
+                    if (i == size - 1 && j == 0) { // bottom left corner is mine
                         // process
                         continue;
                     }
-                    if (i == size - 1 && j == 0) { // bottom left corner
+                    if (i == size - 1 && j == size - 1) { // bottom right corner is mine
                         // process
                         continue;
                     }
-                    if (i == size - 1 && j == size - 1) { // bottom right corner
+                    if (i == 0) { // top wall tile is a mine
                         // process
                         continue;
                     }
-                    if (i == 0) { // top wall
+                    if (j == 0) { // left wall tile is a mine
                         // process
                         continue;
                     }
-                    if (j == 0) { // left wall
+                    if (j == size - 1) { // right wall tile is a mine
                         // process
                         continue;
                     }
-                    if (j == size - 1) { // right wall
-                        // process
-                        continue;
-                    }
-                    if (i == size - 1) { // bottom wall
+                    if (i == size - 1) { // bottom wall tile is a mine
                         // process
                         continue;
                     }
