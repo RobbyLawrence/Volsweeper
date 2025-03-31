@@ -9,6 +9,12 @@
  set of patterns. So these two goals are deeply intertwined. (current progress: I (robby) have implemented a random board, but haven't implemented any rules
  that eliminate the possibilites of 9's and 8's).
 
+- GUI [Matthew] [6 hrs]: I first tried to implement a web based env, but multiple probelms came up so I have swithced to working on a cpp native window instead of web based hosting for our game. 
+    * work is in gui directory
+    * this checked our idea of creating a gui for our game to be played. 
+    * this challenge went great because it allowed us to focus on different parts of a project and learn develop our skills in working on a growing program with multiple people and not have a bunch of disorgaized files.  
+
+
  - game logic
  - bot 
  - bot logic
