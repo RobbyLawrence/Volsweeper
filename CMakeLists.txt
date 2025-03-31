@@ -14,4 +14,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include_directories(include)
 
 # Add executable
-add_executable(volsweeper src/volsweeper.cpp)
+add_executable(volsweeper
+    src/game.cpp
+    src/volsweeper.cpp)
