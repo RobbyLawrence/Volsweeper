@@ -35,7 +35,6 @@ Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c) {
         std::vector<int> mine_ids(num_mines);
         std::vector<int> available_numbers(size*size);
         std::iota(available_numbers.begin(), available_numbers.end(), 0);
-
         std::random_device rd;
         std::mt19937 gen(rd());
         std::shuffle(available_numbers.begin(), available_numbers.end(), gen);
@@ -44,8 +43,8 @@ Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c) {
         The above code generates a vector that has num_mines unique random integers using <random>.
         Below, we use these IDs to fill the grid with mines.
         */
-        for (size_t i = 0;i<mine_ids.size();i++) {
-            grid[(int)(i / size)][i % size] = -1;
+        for (size_t i = 0; i < mine_ids.size(); i++) {
+            grid[(int)(mine_ids[i] / size)][mine_ids[i] % size] = -1;
         }
         // the grid is now filled with mines, and we want to update the squares close to it.
         // we'll only update the squares that are adjacent to mines
@@ -57,35 +56,65 @@ Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c) {
                     increment_grid_entry(i, j+1);
                     continue;
                 }
-                if (i == 0 && j == size - 1 && grid[i][j]) { // top right corner is mine
+                if (i == 0 && j == size - 1 && grid[i][j] == -1) { // top right corner is mine
                     increment_grid_entry(i+1, j);
                     increment_grid_entry(i, j-1);
                     increment_grid_entry(i+1, j-1);
                     continue;
                 }
-                if (i == size - 1 && j == 0) { // bottom left corner is mine
-                    // process
+                if (i == size - 1 && j == 0 && grid[i][j] == -1) { // bottom left corner is mine
+                    increment_grid_entry(i, j+1);
+                    increment_grid_entry(i-1, j);
+                    increment_grid_entry(i-1, j+1);
                     continue;
                 }
-                if (i == size - 1 && j == size - 1) { // bottom right corner is mine
-                    // process
+                if (i == size - 1 && j == size - 1 && grid[i][j] == -1) { // bottom right corner is mine
+                    increment_grid_entry(i, j-1);
+                    increment_grid_entry(i-1, j);
+                    increment_grid_entry(i-1, j-1);
                     continue;
                 }
-                if (i == 0) { // top wall tile is a mine
-                    // process
+                if (i == 0 && grid[i][j] == -1) { // top wall tile is a mine
+                    increment_grid_entry(i, j-1);
+                    increment_grid_entry(i+1, j-1);
+                    increment_grid_entry(i+1, j);
+                    increment_grid_entry(i+1, j+1);
+                    increment_grid_entry(i, j+1);
                     continue;
                 }
-                if (j == 0) { // left wall tile is a mine
-                    // process
+                if (j == 0 && grid[i][j] == -1) { // left wall tile is a mine
+                    increment_grid_entry(i-1, j);
+                    increment_grid_entry(i-1, j+1);
+                    increment_grid_entry(i, j+1);
+                    increment_grid_entry(i+1, j+1);
+                    increment_grid_entry(i+1, j);
                     continue;
                 }
-                if (j == size - 1) { // right wall tile is a mine
-                    // process
+                if (j == size - 1 && grid[i][j] == -1) { // right wall tile is a mine
+                    increment_grid_entry(i-1, j);
+                    increment_grid_entry(i-1, j-1);
+                    increment_grid_entry(i, j-1);
+                    increment_grid_entry(i+1, j-1);
+                    increment_grid_entry(i+1, j);
                     continue;
                 }
-                if (i == size - 1) { // bottom wall tile is a mine
-                    // process
+                if (i == size - 1 && grid[i][j] == -1) { // bottom wall tile is a mine
+                    increment_grid_entry(i, j-1);
+                    increment_grid_entry(i-1, j-1);
+                    increment_grid_entry(i-1, j);
+                    increment_grid_entry(i-1, j+1);
+                    increment_grid_entry(i, j+1);
                     continue;
+                }
+                else if (grid[i][j] == -1){ // tile is surrounded by 8 tiles
+                    increment_grid_entry(i-1, j-1);
+                    increment_grid_entry(i-1, j);
+                    increment_grid_entry(i-1, j+1);
+                    increment_grid_entry(i, j-1);
+                    increment_grid_entry(i, j+1);
+                    increment_grid_entry(i+1, j-1);
+                    increment_grid_entry(i+1, j);
+                    increment_grid_entry(i+1, j+1);
                 }
             }
         }
@@ -95,7 +124,11 @@ Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c) {
 void Minefield::output_field() { // output the grid of a minefield object
     for (std::vector<int> vect : grid) {
         for (int entry : vect) {
-            std::cout << entry << " ";
+            if (entry == -1) {
+                std::cout << 'M' << "  ";
+                continue;
+            }
+            std::cout << entry << "  ";
         }
         std::cout << '\n';
     }
