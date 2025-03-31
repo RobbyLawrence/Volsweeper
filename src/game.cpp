@@ -1,6 +1,5 @@
 #include <iostream>
 #include "volsweeper.hpp"
-#include <SFML/Graphics.hpp>
 
 int main(int argc, char* argv[]) {
     if (argc != 4) {
