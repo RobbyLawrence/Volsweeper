@@ -40,6 +40,7 @@ void pattern_recognition(Minefield& field) {
         }
     }
 }
+
 //B2
 //If the number is touching the same number of flags then all adjacent squares can be opened
 

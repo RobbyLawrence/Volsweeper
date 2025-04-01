@@ -1,26 +1,26 @@
 [
 {
-  "directory": "/Users/robertlawrence/Volsweeper/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/robertlawrence/Volsweeper/include -std=gnu++17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -o CMakeFiles/volsweeper.dir/src/game.cpp.o -c /Users/robertlawrence/Volsweeper/src/game.cpp",
-  "file": "/Users/robertlawrence/Volsweeper/src/game.cpp",
+  "directory": "/home/bdowlin2/cs302-25/Volsweeper/build",
+  "command": "/usr/bin/c++  -I/home/bdowlin2/cs302-25/Volsweeper/include -std=gnu++17 -o CMakeFiles/volsweeper.dir/src/game.cpp.o -c /home/bdowlin2/cs302-25/Volsweeper/src/game.cpp",
+  "file": "/home/bdowlin2/cs302-25/Volsweeper/src/game.cpp",
   "output": "CMakeFiles/volsweeper.dir/src/game.cpp.o"
 },
 {
-  "directory": "/Users/robertlawrence/Volsweeper/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/robertlawrence/Volsweeper/include -std=gnu++17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -o CMakeFiles/volsweeper.dir/src/volsweeper.cpp.o -c /Users/robertlawrence/Volsweeper/src/volsweeper.cpp",
-  "file": "/Users/robertlawrence/Volsweeper/src/volsweeper.cpp",
+  "directory": "/home/bdowlin2/cs302-25/Volsweeper/build",
+  "command": "/usr/bin/c++  -I/home/bdowlin2/cs302-25/Volsweeper/include -std=gnu++17 -o CMakeFiles/volsweeper.dir/src/volsweeper.cpp.o -c /home/bdowlin2/cs302-25/Volsweeper/src/volsweeper.cpp",
+  "file": "/home/bdowlin2/cs302-25/Volsweeper/src/volsweeper.cpp",
   "output": "CMakeFiles/volsweeper.dir/src/volsweeper.cpp.o"
 },
 {
-  "directory": "/Users/robertlawrence/Volsweeper/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/robertlawrence/Volsweeper/include -std=gnu++17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -o CMakeFiles/botV1.dir/src/botV1.cpp.o -c /Users/robertlawrence/Volsweeper/src/botV1.cpp",
-  "file": "/Users/robertlawrence/Volsweeper/src/botV1.cpp",
+  "directory": "/home/bdowlin2/cs302-25/Volsweeper/build",
+  "command": "/usr/bin/c++  -I/home/bdowlin2/cs302-25/Volsweeper/include -std=gnu++17 -o CMakeFiles/botV1.dir/src/botV1.cpp.o -c /home/bdowlin2/cs302-25/Volsweeper/src/botV1.cpp",
+  "file": "/home/bdowlin2/cs302-25/Volsweeper/src/botV1.cpp",
   "output": "CMakeFiles/botV1.dir/src/botV1.cpp.o"
 },
 {
-  "directory": "/Users/robertlawrence/Volsweeper/build",
-  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/robertlawrence/Volsweeper/include -std=gnu++17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -o CMakeFiles/botV1.dir/src/volsweeper.cpp.o -c /Users/robertlawrence/Volsweeper/src/volsweeper.cpp",
-  "file": "/Users/robertlawrence/Volsweeper/src/volsweeper.cpp",
+  "directory": "/home/bdowlin2/cs302-25/Volsweeper/build",
+  "command": "/usr/bin/c++  -I/home/bdowlin2/cs302-25/Volsweeper/include -std=gnu++17 -o CMakeFiles/botV1.dir/src/volsweeper.cpp.o -c /home/bdowlin2/cs302-25/Volsweeper/src/volsweeper.cpp",
+  "file": "/home/bdowlin2/cs302-25/Volsweeper/src/volsweeper.cpp",
   "output": "CMakeFiles/botV1.dir/src/volsweeper.cpp.o"
 }
 ]

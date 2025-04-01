@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/Users/robertlawrence/Volsweeper/bin/botV1"
-  "/Users/robertlawrence/Volsweeper/bin/botV1.pdb"
+  "/home/bdowlin2/cs302-25/Volsweeper/bin/botV1"
+  "/home/bdowlin2/cs302-25/Volsweeper/bin/botV1.pdb"
   "CMakeFiles/botV1.dir/src/botV1.cpp.o"
   "CMakeFiles/botV1.dir/src/botV1.cpp.o.d"
   "CMakeFiles/botV1.dir/src/volsweeper.cpp.o"
