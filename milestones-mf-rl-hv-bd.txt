@@ -1,5 +1,7 @@
 ###
 
+We all submitted our own seperate Challege 7 text file, but here is the rubric we decided on and our goals.
+
 Rubric For the Challenge / Project
 
 10 Points: GUI that allows the user to play Minesweeper
