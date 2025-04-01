@@ -16,5 +16,5 @@ directory, and the binaries will compile in the `bin` folder. Each binary can be
 on usage.
 
 If you need to add another header file in the `include` directory, you'll need to change `CMakeLists.txt`. This
-is an involved process, and will involve deleting and recreating the `build` directory. One should not do
-this unless they are comfortable with the CMake build system and the processes involved therein!
+is an involved process!. One should not do this unless they are comfortable with the CMake build system and the
+processes involved therein!
