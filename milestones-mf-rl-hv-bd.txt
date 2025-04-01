@@ -38,6 +38,7 @@ Hien's Time Log
 .5 hr learning minesweeper
 4 hrs experimenting with an SFML for the GUI
 1 hr debugging (unable to get it to work)
+1 hr contributed to code review 
 .5 hr editing documentation
 
 
