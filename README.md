@@ -10,9 +10,10 @@ given a minefield. Finally, we'd like to implement an algorithm that generates m
 guessing.
 
 ## How to Build
-Everything is already configured with CMake. All you have to do to compile is run `cmake --build build` in the root
-directory, and the binary will compile in the `bin` folder. The binary can be run from root with:
-`./bin/volsweeper [FLAGS] [SIZE] [NUM_MINES]`
+Notice that there is no `build` directory for CMake. Run `mkdir build && cd build`, and then `cmake ..`.
+After this, all you have to do to compile is run `cmake --build build` in the root
+directory, and the binaries will compile in the `bin` folder. Each binary can be run with the `-h` flag for information
+on usage.
 
 If you need to add another header file in the `include` directory, you'll need to change `CMakeLists.txt`. This
 is an involved process, and will involve deleting and recreating the `build` directory. One should not do
