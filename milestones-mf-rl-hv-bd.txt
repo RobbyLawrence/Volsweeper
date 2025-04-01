@@ -33,3 +33,11 @@ Robby's Time Log
 2 hours developing Minefield struct and implementing methods
 2 hours resolving conflicts, merging branches
 1 hour writing documentation
+
+Hien's Time Log
+.5 hr learning minesweeper
+4 hrs experimenting with an SFML for the GUI
+1 hr debugging (unable to get it to work)
+.5 hr editing documentation
+
+
