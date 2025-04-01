@@ -36,8 +36,8 @@ Robby's Time Log
 
 Hien's Time Log
 .5 hr learning minesweeper
-4 hrs experimenting with an SFML for the GUI
+4 hrs experimenting with graphics libraries like SFML and SDL2
 1 hr debugging (unable to get it to work)
-1 hr contributed to code review and ensured documentation stayed up to date
+1 hr contributed to code review and format documentation
 
 
