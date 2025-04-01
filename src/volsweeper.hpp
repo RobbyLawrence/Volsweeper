@@ -13,4 +13,5 @@ struct Minefield {
   void increment_grid_entry(int i, int j);
   Minefield(std::string flag, size_t size_c, size_t num_mines_c);
   void output_field();
+  std::string output_string();
 };
