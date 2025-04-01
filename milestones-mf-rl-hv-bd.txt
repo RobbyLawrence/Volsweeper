@@ -1,5 +1,12 @@
 ###
 
+Rubric For the Challenge / Project
+
+10 Points: GUI that allows the user to play Minesweeper
+10 Points: Hint button that suggets a hint button
+10 Points: Board Generation that always generates a board that can be solved without guessing
+10 Points: Overall clean aesthetically pleasing project that is user friendly and easy to play
+
 1. this will be a project that creates the game minesweeper and a bot that is written with an algorithm that can complete a game of minesweeper. 
  
  - board needs to be built
@@ -9,18 +16,18 @@
  set of patterns. So these two goals are deeply intertwined. (current progress: I (robby) have implemented a random board, but haven't implemented any rules
  that eliminate the possibilites of 9's and 8's).
 
-- GUI [Matthew] [6 hrs]: I first tried to implement a web based env, but multiple probelms came up so I have swithced to working on a cpp native window instead of web based hosting for our game. 
+- GUI [Matthew] [6 hrs]: I first tried to implement a web based env, but multiple problems came up so I have switched to working on a cpp native window instead of web based hosting for our game. 
     * work is in gui directory
     * this checked our idea of creating a gui for our game to be played. 
     * this challenge went great because it allowed us to focus on different parts of a project and learn develop our skills in working on a growing program with multiple people and not have a bunch of disorgaized files.  
 
+Brett's Time Log
+1 hour learning how to play minesweeper
+5 hours developing the first stages of the bot
+1 hour of lab organizing information between group members
 
- - game logic
- - bot 
- - bot logic
-
-	the bot logic will be based off of being given patterns that it will be able to identify very quickly and solve the minesweeper
-	puzzle on its own in very little time.
-
-	We will be implementing the patterns shown in the minesweeper online handbook posted here. https://minesweeper.online/help/patterns. 
-
+Robby's Time Log
+2.5 hours setting up CMake
+2 hours developing Minefield struct and implementing methods
+2 hours resolving conflicts, merging branches
+1 hour writing documentation
