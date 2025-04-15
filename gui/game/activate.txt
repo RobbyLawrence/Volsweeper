@@ -1,0 +1,5 @@
+Here's how to activate virtual environment
+
+source venv/bin/activate
+
+do this from game dir
