@@ -29,5 +29,10 @@ int main(int argc, char* argv[]) {
     }
     Minefield field = Minefield(argv[1],size,num_mines);
     std::cout << field.output_string();
+    std::cout << "What square would you like to check? Enter your answer as \"x y\": ";
+    int x,y;
+    std::cin >> x >> y;
+    field.reveal_square(x,y);
+    field.output_field();
     return 0;
 }
