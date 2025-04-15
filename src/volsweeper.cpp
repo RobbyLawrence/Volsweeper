@@ -155,3 +155,9 @@ std::string Minefield::output_string() {
   }
   return ss.str();
 }
+
+std::string Minefield::output_known() {
+  // the opened_squares 2D vector stores 0's and 1's
+  std::stringstream ss;
+  return ss.str();
+}
