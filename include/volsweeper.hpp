@@ -9,9 +9,10 @@ struct Minefield {
   size_t size;
   size_t num_mines;
   // entry will be -1 for mines and otherwise represent number of mines adjacent
-  std::vector<std::vector<int>> grid;
+  std::vector<std::vector<int> > grid;
   void increment_grid_entry(int i, int j);
   Minefield(std::string flag, size_t size_c, size_t num_mines_c);
   void output_field();
   std::string output_string();
+  void reveal_square(int x, int y);
 };
