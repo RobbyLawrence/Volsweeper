@@ -201,5 +201,24 @@ std::string Minefield::output_string() {
 }
 
 void Minefield::reveal_square(int x, int y) {
-    revealed[x][y] = true; // still need to work on reveal chaining
+    if (revealed[x][y]) { // prevent infinite recursion
+        return;
+    }
+    revealed[x][y] = true; // mark square
+
+    if (grid[x][y] == 0) { // recursively opening zero squares
+        std::vector<int> directions = {-1, 0, 1};
+        for (int direction_1 : directions) {
+            for (int direction_2 : directions) {
+                if (direction_1 == 0 && direction_2 == 0) {
+                    continue;
+                }
+                int new_x = x + direction_1;
+                int new_y = y + direction_2;
+                if (new_x >= 0 && new_x < size && new_y >= 0 && new_y < size) {
+                    reveal_square(new_x, new_y);
+                }
+            }
+        }
+    }
 }
