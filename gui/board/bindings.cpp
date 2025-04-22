@@ -16,6 +16,9 @@ py::class_<Minefield>(m, "Minefield")
     .def("debug_output_string", &Minefield::debug_output_string)
     .def("output_string", &Minefield::output_string)
     .def("reveal_square", &Minefield::reveal_square)
-    .def("get_grid", [](Minefield &m) { return m.grid; });
+    .def("get_grid", [](Minefield &m) { return m.grid; })
+    .def("get_revealed", [](Minefield &m){
+	return m.revealed;
+	});
 }
 
