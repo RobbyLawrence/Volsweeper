@@ -1,0 +1,13 @@
+# ignore each person's build folder
+build/
+
+# ignore the compile_commands symlink
+compile_commands.json
+
+.cache/
+
+bin/
+
+.clangd
+
+refs/remotes/origin/main
