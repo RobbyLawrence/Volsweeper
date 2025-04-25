@@ -44,6 +44,8 @@ void pattern_recognition(Minefield& field) {
 //B2
 //If the number is touching the same number of flags then all adjacent squares can be opened
 
+
+
 //1-1
 //Look at the left 1. It touches the two yellow cells, so they contain one mine. Now look at the right 1.
 //It also touches the two yellow cells, so it already has a mine and the third cell can be opened.
