@@ -6,8 +6,8 @@ compile_commands.json
 
 .cache/
 
-<<<<<<< HEAD
 bin/
-=======
+
 .clangd
->>>>>>> refs/remotes/origin/main
+
+refs/remotes/origin/main
