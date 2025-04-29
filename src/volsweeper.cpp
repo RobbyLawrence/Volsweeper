@@ -35,6 +35,8 @@ Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c) {
     size = size_c;
     std::string flag_string;
     revealed.resize(size,std::vector<bool>(size,false));
+	//Brett added this line
+	flags.resize(size, std::vector<bool>(size,false));
     if (flag == "-r") {
         grid.resize(size, std::vector<int>(size, 0));
         std::vector<int> mine_ids(num_mines);
