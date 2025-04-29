@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     }
     Minefield field = Minefield(argv[1],size,num_mines);
     std::cout << field.output_string();
-    int x,y;
+    int x,y = -1;
     char action;
     bool game_over = false;
     while (!game_over) {
@@ -37,12 +37,19 @@ int main(int argc, char* argv[]) {
         std::cin >> action;
         switch (action) {
             case 'R':
-                std::cout << "What square would you like to reveal? Enter your response as \"x y\": ";
-                std::cin >> x >> y;
-                field.reveal_square(x+size-1,y);
+            std::cout << "What square would you like to reveal? ";
+                while (true) {
+                    std::cout << "Enter your response as \"x y\": ";
+                    std::cin >> x >> y; // error checking input
+                    if (size - y >= 0 && x - 1 >= 0 && size - y < size && x - 1 < size) {
+                        break;
+                    }
+                    std::cout << "Invalid coordinates. Please try again. \n";
+                }
+                field.reveal_square(size-y,x-1);
                 field.output_field();
-                if (field.grid[x][y] == -1) {
-                    std::cout << "You hit a mine!";
+                if (field.grid[size-y][x-1] == -1) {
+                    std::cout << "You hit a mine!\n";
                     game_over = true;
                 }
                 break;
