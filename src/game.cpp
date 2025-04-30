@@ -52,9 +52,35 @@ int main(int argc, char* argv[]) {
                     std::cout << "You hit a mine!\n";
                     game_over = true;
                 }
+                for (std::vector<bool> vect : field.revealed) {
+                    for (bool element : vect) {
+                        if (element == false) {
+                            // i know goto is a bad practice, but i didn't want to use another bool
+                            goto endloops;
+                            // here, this works as a two-layer break
+                        }
+                    }
+                }
+                // we'll only ever arrive here if everything in field.revealed is true
+                std::cout << "You won!";
+                game_over = true;
+                endloops:
                 break;
             case 'H':
                 std::cout << "Possible actions:\n\"R\" - reveal a square\n\"F\" - flag a square\n\"H\" - view this menu\n";
+                break;
+            case 'F':
+            std::cout << "What square would you like to flag? ";
+                while (true) {
+                    std::cout << "Enter your response as \"x y\": ";
+                    std::cin >> x >> y; // error checking input
+                    if (size - y >= 0 && x - 1 >= 0 && size - y < size && x - 1 < size) {
+                        break;
+                    }
+                    std::cout << "Invalid coordinates. Please try again. \n";
+                }
+                field.flag_square(size-y,x-1);
+                field.output_field();
                 break;
             default:
                 std::cout << "Unknown action. Please try again, or use the \"H\" command to view available actions.\n";
