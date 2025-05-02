@@ -13,7 +13,7 @@ struct Minefield {
     std::vector<std::vector<bool> > revealed;
     std::vector<std::vector<bool> > flagged;
     void increment_grid_entry(int i, int j);
-    Minefield(std::string flag, size_t size_c, size_t num_mines_c);
+    Minefield(std::string flag, size_t size_c, size_t num_mines_c, std::pair<size_t,size_t> initial_square);
     void debug_output_field();
     std::string debug_output_string(); // the "debug" methods return what the board actually looks like
     std::string output_string(); // the other output methods only show revealed squares
@@ -21,3 +21,5 @@ struct Minefield {
     void reveal_square(int x, int y);
     void flag_square(int x, int y);
 };
+
+bool check_bounds(size_t size, size_t x, size_t y);
