@@ -42,7 +42,7 @@ void B1(Minefield& field) {
             if (val > 0 && field.revealed[i][j]) {
 				//get unopened neighbors
 				std::vector<std::pair<int,int>> unopened_neighbors = get_unopened_neighbors(field, i, j);
-				std::cout<< "Checking (" << i << "," << j << "), val=" << val << ",unopened_neighbors=" << unopened_neighbors.size() << ": ";
+				std::cout<< "Checking (" << i << "," << j << "), val=" << val << ",unopened_neighbors=" << unopened_neighbors.size()				 << ": ";
 				for (const std::pair<int, int>& n : unopened_neighbors) {
 					std::cout << "(" << n.first << "," << n.second << ") ";
 				}
@@ -111,7 +111,8 @@ void B2(Minefield& field) {
 	}
 }
 
-//pattern 1-1
+
+
 void pattern_1_1(Minefield& field) {
     std::cout << "Running pattern_1_1 detection..." << std::endl;
 
@@ -126,7 +127,7 @@ void pattern_1_1(Minefield& field) {
                 std::vector<std::pair<int, int>> exclusive_to_first;
                 std::vector<std::pair<int, int>> exclusive_to_second;
 
-                // Cells around the first 1
+                // Get neighbors of first 1
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
                         if (dx == 0 && dy == 0) continue;
@@ -134,12 +135,12 @@ void pattern_1_1(Minefield& field) {
                         int ny = j + dy;
                         if (nx >= 0 && nx < field.size && ny >= 0 && ny < field.size &&
                             !field.revealed[nx][ny]) {
-                            cells_around_first.push_back(std::make_pair(nx, ny));
+                            cells_around_first.emplace_back(nx, ny);
                         }
                     }
                 }
 
-                // Cells around the second 1
+                // Get neighbors of second 1
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
                         if (dx == 0 && dy == 0) continue;
@@ -147,94 +148,66 @@ void pattern_1_1(Minefield& field) {
                         int ny = j + 1 + dy;
                         if (nx >= 0 && nx < field.size && ny >= 0 && ny < field.size &&
                             !field.revealed[nx][ny]) {
-                            cells_around_second.push_back(std::make_pair(nx, ny));
+                            cells_around_second.emplace_back(nx, ny);
                         }
                     }
                 }
 
-                // Find shared and exclusive cells
-                for (size_t a = 0; a < cells_around_first.size(); a++) {
-                    std::pair<int, int> cell1 = cells_around_first[a];
+                // Identify shared and exclusive cells
+                for (const auto& cell1 : cells_around_first) {
                     bool shared = false;
-                    for (size_t b = 0; b < cells_around_second.size(); b++) {
-                        std::pair<int, int> cell2 = cells_around_second[b];
-                        if (cell1.first == cell2.first && cell1.second == cell2.second) {
-                            shared = true;
+                    for (const auto& cell2 : cells_around_second) {
+                        if (cell1 == cell2) {
                             shared_cells.push_back(cell1);
-                            break;
-                        }
-                    }
-                    if (!shared) {
-                        exclusive_to_first.push_back(cell1);
-                    }
-                }
-
-                for (size_t b = 0; b < cells_around_second.size(); b++) {
-                    std::pair<int, int> cell2 = cells_around_second[b];
-                    bool shared = false;
-                    for (size_t a = 0; a < cells_around_first.size(); a++) {
-                        std::pair<int, int> cell1 = cells_around_first[a];
-                        if (cell2.first == cell1.first && cell2.second == cell1.second) {
                             shared = true;
                             break;
                         }
                     }
-                    if (!shared) {
-                        exclusive_to_second.push_back(cell2);
-                    }
+                    if (!shared) exclusive_to_first.push_back(cell1);
                 }
 
-                // Logic: if exactly 2 shared cells, 1 is a mine → safe to open exclusives
+                for (const auto& cell2 : cells_around_second) {
+                    bool shared = false;
+                    for (const auto& cell1 : cells_around_first) {
+                        if (cell2 == cell1) {
+                            shared = true;
+                            break;
+                        }
+                    }
+                    if (!shared) exclusive_to_second.push_back(cell2);
+                }
+
+                // Apply 1-1 logic
                 if (shared_cells.size() == 2) {
-                    int flags_first = 0;
-                    int flags_second = 0;
-
-                    for (size_t k = 0; k < cells_around_first.size(); k++) {
-                        int x = cells_around_first[k].first;
-                        int y = cells_around_first[k].second;
-                        if (field.flags[x][y]) {
-                            flags_first++;
-                        }
-                    }
-
-                    for (size_t k = 0; k < cells_around_second.size(); k++) {
-                        int x = cells_around_second[k].first;
-                        int y = cells_around_second[k].second;
-                        if (field.flags[x][y]) {
-                            flags_second++;
-                        }
-                    }
+                    int flags_first = 0, flags_second = 0;
+                    for (const auto& c : cells_around_first)
+                        if (field.flags[c.first][c.second]) flags_first++;
+                    for (const auto& c : cells_around_second)
+                        if (field.flags[c.first][c.second]) flags_second++;
 
                     if (flags_first == 0 && flags_second == 0) {
                         std::cout << "  1-1 Pattern: Found 2 shared cells, flag one and open exclusives\n";
 
-                        // Flag one of the shared cells
-                        for (size_t k = 0; k < shared_cells.size(); k++) {
-                            int x = shared_cells[k].first;
-                            int y = shared_cells[k].second;
-                            if (!field.flags[x][y]) {
-                                std::cout << "  Flagging: (" << x << "," << y << ")\n";
-                                field.flags[x][y] = true;
-                                break; // Only flag one
+                        // Flag one of the shared cells if not flagged
+                        for (const auto& c : shared_cells) {
+                            if (!field.flags[c.first][c.second]) {
+                                std::cout << "  Flagging: (" << c.first << "," << c.second << ")\n";
+                                field.flags[c.first][c.second] = true;
+                                break; // Flag only one
                             }
                         }
 
-                        // Reveal safe exclusive cells
-                        for (size_t k = 0; k < exclusive_to_first.size(); k++) {
-                            int x = exclusive_to_first[k].first;
-                            int y = exclusive_to_first[k].second;
-                            if (!field.flags[x][y]) {
-                                std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
-                                field.reveal_square(x, y);
+                        // Reveal exclusive cells
+                        for (const auto& c : exclusive_to_first) {
+                            if (!field.flags[c.first][c.second]) {
+                                std::cout << "  Safe to reveal: (" << c.first << "," << c.second << ")\n";
+                                field.reveal_square(c.first, c.second);
                             }
                         }
-
-                        for (size_t k = 0; k < exclusive_to_second.size(); k++) {
-                            int x = exclusive_to_second[k].first;
-                            int y = exclusive_to_second[k].second;
-                            if (!field.flags[x][y]) {
-                                std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
-                                field.reveal_square(x, y);
+                        for (const auto& c : exclusive_to_second) {
+                            if (!field.flags[c.first][c.second]) {
+                                std::cout << "  Safe to reveal: (" << c.first << "," << c.second << ")\n";
+                                field.reveal_square(c.first, c.second);
                             }
                         }
                     }
@@ -242,7 +215,7 @@ void pattern_1_1(Minefield& field) {
             }
         }
     }
-}
+} 
                 
 //1-2
 //when two horizontal cells are labeled 1 and 2 and they share 2 unopened cells one of those
