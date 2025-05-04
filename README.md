@@ -6,8 +6,8 @@ Project Members: Robby Lawrence, Matthew Ferrari, Brett Dowling, Hien Vo
 The goal of this project is to create a playable Minesweeper (hereafter referred to as "Volsweeper) executable.
 This program should open in a window, and allow the user to interact with the program through a GUI.
 We're aiming to create a program that can also play the game by providing the user with the most optimal move
-given a minefield. Finally, we'd like to implement an algorithm that generates minefields that can be solved without
-guessing.
+given a minefield. A common pitfall in Minesweeper implementations is that the player isn't guaranteed to click a good starting square. We've fixed this by generating the board after the player clicks on their first square, ensuring that square is safe, as well as all adjacent squares. Finally, we'd like to implement an algorithm that generates minefields that can be solved without
+guessing. 
 
 ## How to Build
 Notice that there is no `build` directory for CMake. Run `mkdir build && cd build`, and then `cmake ..`.

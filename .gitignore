@@ -7,7 +7,6 @@ compile_commands.json
 .cache/
 
 bin/
-
 .clangd
 
 refs/remotes/origin/main

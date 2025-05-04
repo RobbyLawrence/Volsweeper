@@ -35,8 +35,7 @@ Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c) {
     size = size_c;
     std::string flag_string;
     revealed.resize(size,std::vector<bool>(size,false));
-	//Brett added this line
-	flags.resize(size, std::vector<bool>(size,false));
+    flagged.resize(size,std::vector<bool>(size,false));
     if (flag == "-r") {
         grid.resize(size, std::vector<int>(size, 0));
         std::vector<int> mine_ids(num_mines);
@@ -171,6 +170,9 @@ void Minefield::output_field() {
                     std::cout << grid[i][j] << "  ";
                 }
             }
+            else if (!(revealed[i][j]) && flagged[i][j]) {
+                std::cout << "F  ";
+            }
             else {
                 std::cout << "X  ";
             }
@@ -223,4 +225,14 @@ void Minefield::reveal_square(int x, int y) {
             }
         }
     }
+    return;
+}
+
+void Minefield::flag_square(int x, int y) {
+    if (revealed[x][y]) {
+        std::cout << "Can't flag a square that's already revealed\n";
+        return; // we don't want to flag a revealed square
+    }
+    flagged[x][y] = true;
+    return;
 }
