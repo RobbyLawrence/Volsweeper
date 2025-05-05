@@ -10,3 +10,5 @@ bin/
 .clangd
 
 refs/remotes/origin/main
+
+bin/
