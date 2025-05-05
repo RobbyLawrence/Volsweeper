@@ -5,13 +5,22 @@
 #include <string>
 #include <vector>
 
+// decided not to use this hash function, but am keeping it just in case I need it
+struct Pair_Hash {
+    std::size_t operator()(const std::pair<std::size_t,std::size_t>& p) const noexcept {
+        return p.first ^ (p.second * 0x9e3779b97f4a7c15ULL); // just a combinator
+    }
+};
+
+using Point = std::pair<std::size_t,std::size_t>;
+
 void Minefield::increment_grid_entry(int i, int j) { // function to increment a square if it's not a mine
     if (grid[i][j] != -1) {
         grid[i][j]++;
     }
 }
 
-Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c) {
+Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c, std::pair<size_t,size_t> f_square) {
     // we'll assume num_mines is positive, so error-checking is required in the
     // main file
     // // each tile is represented in the map, and 0 means a mine can be placed, 1
@@ -30,13 +39,15 @@ Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c) {
     vector entry for an ID x, use grid[floor(x/size)][x % size] (i came up with
     these equations, hopefully they work). We can use type casting to integer for
     the floor function.
+    Later on, I call the ID of a tile its "wrapping index".
     */
     num_mines = num_mines_c;
     size = size_c;
     std::string flag_string;
     revealed.resize(size,std::vector<bool>(size,false));
     flagged.resize(size,std::vector<bool>(size,false));
-    if (flag == "-r") {
+    mines.resize(size*size,false);
+    if (flag == "-tr") {
         grid.resize(size, std::vector<int>(size, 0));
         std::vector<int> mine_ids(num_mines);
         std::vector<int> available_numbers(size * size);
@@ -45,6 +56,9 @@ Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c) {
         std::mt19937 gen(rd());
         std::shuffle(available_numbers.begin(), available_numbers.end(), gen);
         std::copy_n(available_numbers.begin(), num_mines, mine_ids.begin());
+        for (int mine_id : mine_ids) {
+            mines[mine_id] = true;
+        }
         /*
         The above code generates a vector that has num_mines unique random integers
         using <random>. Below, we use these IDs to fill the grid with mines.
@@ -124,6 +138,64 @@ Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c) {
                                 increment_grid_entry(i + 1, j);
                                 increment_grid_entry(i + 1, j + 1);
                             }
+            }
+        }
+    }
+    else if (flag == "-r") {
+        // convert to 0-based
+        int x0 = int(f_square.first)  - 1;
+        int y0 = int(f_square.second) - 1;
+
+        // mark the 3×3 block around the first click as “no-mine”
+        std::vector<bool> is_safe(size*size, false);
+        for (int dx = -1; dx <= 1; ++dx) {
+            for (int dy = -1; dy <= 1; ++dy) {
+                int cx = x0 + dx, cy = y0 + dy;
+                if (cx >= 0 && cx < size && cy >= 0 && cy < size) {
+                    int row = size - 1 - cy;    // row 0 = top
+                    int col = cx;               // col 0 = left
+                    is_safe[row*size + col] = true;
+                }
+            }
+        }
+
+        // collect all other indices
+        std::vector<int> avail;
+        avail.reserve(size*size);
+        for (int idx = 0; idx < size*size; ++idx) {
+            if (!is_safe[idx])
+            avail.push_back(idx);
+        }
+
+        if (avail.size() < num_mines) {
+            exit(1);
+        }
+
+        // shuffle & pick mines
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::shuffle(avail.begin(), avail.end(), gen);
+        std::vector<int> mine_ids(avail.begin(), avail.begin() + num_mines);
+
+        // place mines
+        grid.assign(size, std::vector<int>(size, 0));
+        for (int id : mine_ids) {
+            int r = id / size, c = id % size;
+            grid[r][c] = -1;
+        }
+
+        // fill in neighbor counts
+        for (int i = 0; i < size; ++i) {
+            for (int j = 0; j < size; ++j) {
+                if (grid[i][j] != -1) continue;
+                for (int di = -1; di <= 1; ++di) {
+                    for (int dj = -1; dj <= 1; ++dj) {
+                        if (di==0 && dj==0) continue;
+                        int ni = i + di, nj = j + dj;
+                        if (ni>=0 && ni<size && nj>=0 && nj<size)
+                        increment_grid_entry(ni, nj);
+                    }
+                }
             }
         }
     }
@@ -233,6 +305,44 @@ void Minefield::flag_square(int x, int y) {
         std::cout << "Can't flag a square that's already revealed\n";
         return; // we don't want to flag a revealed square
     }
+    if (flagged[x][y]) {
+        flagged[x][y] = false; // let the user unflag a square
+        return;
+    }
     flagged[x][y] = true;
     return;
+}
+
+bool check_status(Minefield field) {
+    size_t flags_placed  = 0;
+    size_t correct_flags = 0;
+    size_t N = field.size;
+
+    // 1) Count flags and correct flags
+    for (size_t r = 0; r < N; ++r) {
+        for (size_t c = 0; c < N; ++c) {
+            if (!field.flagged[r][c])
+                continue;
+
+            ++flags_placed;
+
+            // flatten (r,c) to index in field.mines:
+            size_t idx = r * N + c;
+            if (field.mines[idx])
+                ++correct_flags;
+        }
+    }
+
+    // if not all flags used, game still in progress
+    if (flags_placed < field.num_mines) {
+        return false;
+    }
+
+    // if we've used all flags, we have to check correctness
+    if (correct_flags == field.num_mines) {
+        std::cout << "You win the game!\n";
+    } else {
+        std::cout << "You've placed at least one incorrect flag!\n";
+    }
+    return true;  // game over
 }
