@@ -57,58 +57,57 @@ void B1(Minefield& field) {
     }
 }
 
-//B2
-//If the number is touching the same number of flags then all adjacent squares can be opened
-void B2(Minefield& field) {
 
-	//vector to store the positions that satisfy B2
-	std::vector<std::pair<int,int>> candidates;
-	
-	//go through entire board to find candidates
+void B2(Minefield& field) {
+    std::cout << "Running B2 detection...\n";
+
+    // Vector to store candidates
+    std::vector<std::pair<int, int> > candidates;
+
+    // First pass: Find candidates
     for (int i = 0; i < field.size; i++) {
         for (int j = 0; j < field.size; j++) {
             int val = field.grid[i][j];
-			//only process tiles that are revealed and > 0
+            // Only process revealed tiles with value > 0
             if (val > 0 && field.revealed[i][j]) {
                 int flagged_neighbors = 0;
-				//get all adjacent unopened neighbors
-                std::vector<std::pair<int, int>> unopened_neighbors = get_unopened_neighbors(field, i, j);
-				
-				//count the number of flagged neighbors
+                // Count flagged neighbors
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
-						//skip the tile itself
                         if (dx == 0 && dy == 0) continue;
                         int nx = i + dx;
                         int ny = j + dy;
-						//check bounds
                         if (nx >= 0 && nx < field.size && ny >= 0 && ny < field.size && field.flags[nx][ny]) {
                             flagged_neighbors++;
                         }
                     }
                 }
-                //if number of flagged tiles is the same as the value, you can open all tiles adjacent
-				if (flagged_neighbors == val) {
-                    candidates.push_back({i,j});
-				}
-			}
+                // Debug: Log checked cells
+                std::cout << "Checking (" << i << "," << j << "), val=" << val << ", flagged_neighbors=" << flagged_neighbors << "\n";
+                // If flagged neighbors equal the value, add to candidates
+                if (flagged_neighbors == val) {
+                    candidates.push_back(std::pair<int, int>(i, j));
+                    std::cout << "B2 candidate at (" << i << "," << j << "), flagged_neighbors=" << flagged_neighbors << "\n";
+                }
+            }
         }
     }
-	
-	//second pass for each candidate reveal all adjacent and unflagged tiles
-	for (std::vector<std::pair<int, int>>::iterator it = candidates.begin(); it != candidates.end(); it++) {
-		int i = it->first;
-		int j = it->second;
-		//get the unopened neighbors of the candidate cell
-		std::vector<std::pair<int, int>> unopened_neighbors = get_unopened_neighbors(field, i, j);
-		std::cout << "B2 triggered at (" << i << "," << j << "), revealing safe tiles\n";
-		//reveal each neighbor
-		for (std::vector<std::pair<int, int>>::iterator it2 = unopened_neighbors.begin(); it2 != unopened_neighbors.end(); it2++) {
-			int x = it2->first;
-			int y = it2->second;
-			field.reveal_square(x, y);
-		}
-	}
+
+    // Second pass: Reveal safe unopened neighbors for each candidate
+    for (std::vector<std::pair<int, int> >::iterator it = candidates.begin(); it != candidates.end(); ++it) {
+        int i = it->first;
+        int j = it->second;
+        std::vector<std::pair<int, int> > unopened_neighbors = get_unopened_neighbors(field, i, j);
+        std::cout << "B2 triggered at (" << i << "," << j << "), revealing safe tiles\n";
+        for (std::vector<std::pair<int, int> >::iterator neighbor_it = unopened_neighbors.begin(); neighbor_it != unopened_neighbors.end(); ++neighbor_it) {
+            int x = neighbor_it->first;
+            int y = neighbor_it->second;
+            if (!field.flags[x][y]) { // Only reveal if not flagged
+                std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
+                field.reveal_square(x, y);
+            }
+        }
+    }
 }
 
 //pattern 1-1
@@ -295,11 +294,107 @@ void pattern_1_2_corner(Minefield& field) {
 //1-2C+
 
 //1-2-1
+// 1-2-1 Pattern: Detects horizontal 1-2-1 pattern and deduces mines/safe cells
 void pattern_1_2_1(Minefield& field) {
+    std::cout << "Running pattern_1_2_1 detection..." << std::endl;
+
     for (int i = 0; i < field.size; i++) {
         for (int j = 0; j < field.size - 2; j++) {
-            if (field.grid[i][j] == 1 && field.grid[i][j+1] == 2 && field.grid[i][j+2] == 1) {
+            // Check for revealed 1-2-1 pattern
+            if (field.revealed[i][j] && field.revealed[i][j + 1] && field.revealed[i][j + 2] &&
+                field.grid[i][j] == 1 && field.grid[i][j + 1] == 2 && field.grid[i][j + 2] == 1) {
                 
+                // Get unopened neighbors for each cell
+                std::vector<std::pair<int, int>> left_1_neighbors = get_unopened_neighbors(field, i, j);
+                std::vector<std::pair<int, int>> middle_2_neighbors = get_unopened_neighbors(field, i, j + 1);
+                std::vector<std::pair<int, int>> right_1_neighbors = get_unopened_neighbors(field, i, j + 2);
+
+                // Cells above and below the middle "2" (potential mines)
+                std::vector<std::pair<int, int>> middle_cells;
+                int above_x = i - 1, below_x = i + 1, middle_y = j + 1;
+                if (above_x >= 0 && !field.revealed[above_x][middle_y]) {
+                    middle_cells.push_back({above_x, middle_y});
+                }
+                if (below_x < field.size && !field.revealed[below_x][middle_y]) {
+                    middle_cells.push_back({below_x, middle_y});
+                }
+
+                // Find exclusive cells for left "1" (not adjacent to middle "2")
+                std::vector<std::pair<int, int>> exclusive_left;
+                for (const auto& cell : left_1_neighbors) {
+                    bool is_exclusive = true;
+                    for (const auto& middle_cell : middle_2_neighbors) {
+                        if (cell.first == middle_cell.first && cell.second == middle_cell.second) {
+                            is_exclusive = false;
+                            break;
+                        }
+                    }
+                    if (is_exclusive) {
+                        exclusive_left.push_back(cell);
+                    }
+                }
+
+                // Find exclusive cells for right "1" (not adjacent to middle "2")
+                std::vector<std::pair<int, int>> exclusive_right;
+                for (const auto& cell : right_1_neighbors) {
+                    bool is_exclusive = true;
+                    for (const auto& middle_cell : middle_2_neighbors) {
+                        if (cell.first == middle_cell.first && cell.second == middle_cell.second) {
+                            is_exclusive = false;
+                            break;
+                        }
+                    }
+                    if (is_exclusive) {
+                        exclusive_right.push_back(cell);
+                    }
+                }
+
+                // Check if the pattern is valid (e.g., middle "2" has exactly 2 unopened neighbors above/below)
+                if (middle_cells.size() == 2) {
+                    // Count flags around each cell to ensure no premature flagging
+                    int flags_left = 0, flags_middle = 0, flags_right = 0;
+                    for (const auto& cell : left_1_neighbors) {
+                        if (field.flags[cell.first][cell.second]) flags_left++;
+                    }
+                    for (const auto& cell : middle_2_neighbors) {
+                        if (field.flags[cell.first][cell.second]) flags_middle++;
+                    }
+                    for (const auto& cell : right_1_neighbors) {
+                        if (field.flags[cell.first][cell.second]) flags_right++;
+                    }
+
+                    // Apply pattern if no flags interfere
+                    if (flags_left == 0 && flags_middle == 0 && flags_right == 0) {
+                        std::cout << "1-2-1 Pattern at (" << i << "," << j << ") to (" << i << "," << j + 2 << ")\n";
+
+                        // Flag the cells above and below the middle "2" as mines
+                        for (const auto& cell : middle_cells) {
+                            int x = cell.first, y = cell.second;
+                            if (!field.flags[x][y]) {
+                                std::cout << "  Flagging mine at (" << x << "," << y << ")\n";
+                                field.flags[x][y] = true;
+                            }
+                        }
+
+                        // Reveal exclusive safe cells for left "1"
+                        for (const auto& cell : exclusive_left) {
+                            int x = cell.first, y = cell.second;
+                            if (!field.flags[x][y]) {
+                                std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
+                                field.reveal_square(x, y);
+                            }
+                        }
+
+                        // Reveal exclusive safe cells for right "1"
+                        for (const auto& cell : exclusive_right) {
+                            int x = cell.first, y = cell.second;
+                            if (!field.flags[x][y]) {
+                                std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
+                                field.reveal_square(x, y);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -358,34 +453,32 @@ void test_bot() {
     //5x5 grid example (mines are marked as -1)
     Minefield field("dummy", 5, 1); 
 
-	// Setup a grid with a proper horizontal 1-1 pattern
-    // The key is to have two adjacent 1s that share exactly 2 unopened cells
-    field.grid = {
-        {0, 0, 0, 0, 0},
-        {0, 1, 1, 0, 0},  // Two adjacent 1s
-        {0, 1, -1, 1, 0},  // Mine in the middle
-        {0, 1, 1, 0, 0},
-        {0, 0, 0, 0, 0}
-    };
-    
-    // Reveal just the two 1s in the middle row
-    field.revealed = {
-        {false, false, false, false, false},
-        {false, true, true, false, false},  // The two adjacent 1s are revealed
-        {false, false, false, false, false},
-        {false, false, false, false, false},
-        {false, false, false, false, false}
-    };
+	// Setup a 5x5 grid with B1, B2, and 1-2-1 patterns
+	field.grid = {
+    {1, -1, 0, 0, 0},    // Row 0: B1 mine at [0][1]
+    {2, -1, 1, 0, 0},    // Row 1: B1 at [1][0]=2, 1-2-1 mine at [1][2]
+    {1, 1, 2, 1, 0},     // Row 2: 1-2-1 pattern at [2][1]=1, [2][2]=2, [2][3]=1
+    {-1, 1, -1, 1, 2},    // Row 3: 1-2-1 mine at [3][2], B2 at [3][4]=2
+    {-1, 1, 0, 1, -1}     // Row 4: B2 mine at [4][4]
+	};
 
+	// Reveal cells to trigger B1, B2, and 1-2-1
+	field.revealed = {
+    {false, false, false, false, false}, // Row 0
+    {true, false, false, false, false},  // Row 1: B1 at [1][0]
+    {false, true, true, true, false},    // Row 2: 1-2-1 at [2][1], [2][2], [2][3]
+    {false, false, false, false, true},  // Row 3: B2 at [3][4]
+    {false, false, false, false, false}  // Row 4
+	};
 
-	/*// Reveal cells to set up 1-1
-	field.revealed[0][1] = true; // Revealing the first 1
-	field.revealed[1][1] = true; // Revealing the second 1
-	field.revealed[2][1] = true; // Revealing the third 1
-	field.revealed[0][2] = false; // Not revealed yet (should be flagged or deduced)
-	field.revealed[1][2] = false; // Not revealed yet (should be flagged or deduced)
-	field.revealed[2][2] = false; // Not revealed yet (should be flagged or deduced)
-	*/
+	// Initialize flags (set for B2 pattern)
+	field.flags = {
+    {false, false, false, false, false},
+    {false, false, false, false, false},
+    {false, false, false, false, false},
+    {false, false, false, false, true},  // Flag at [3][4] for B2
+    {false, false, false, false, true}   // Flag at [4][4] for B2
+	};
 
 
 	//debug prints
@@ -418,7 +511,7 @@ void test_bot() {
     field.output_field();
 
 	//run B2
-	pattern_1_1(field);
+	pattern_recognition(field);
     // Output the field after the bot has run
     std::cout << "\nBoard after bot:\n";
     bot_output_field(field);
