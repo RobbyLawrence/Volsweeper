@@ -250,16 +250,12 @@ void pattern_1_1(Minefield& field) {
                 
 				
 				
-				// ... [same changes as horizontal check] ...
-				 // ********** ADDED VARIABLE DECLARATIONS **********
             std::vector<std::pair<int, int>> cells_around_first;
             std::vector<std::pair<int, int>> cells_around_second;
             std::vector<std::pair<int, int>> shared_cells;
             std::vector<std::pair<int, int>> exclusive_to_first;
             std::vector<std::pair<int, int>> exclusive_to_second;
-            // ***********************************************
 
-			// ********** ADDED CELL COLLECTION FOR FIRST 1 **********
             // Cells around the first 1
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dy = -1; dy <= 1; dy++) {
@@ -273,9 +269,6 @@ void pattern_1_1(Minefield& field) {
                 }
             }
 
-			 // *****************************************************
-
-            // ********** ADDED CELL COLLECTION FOR SECOND 1 **********
             // Cells around the second 1
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dy = -1; dy <= 1; dy++) {
@@ -289,11 +282,6 @@ void pattern_1_1(Minefield& field) {
                 }
             }
 
-			 // ********** ADDED SHARED/EXCLUSIVE CELL ANALYSIS **********
-            // [The entire section finding shared/exclusive cells...]
-            // ********************************************************
-
-            // ********** ADDED FLAG COUNTING LOGIC **********
             // Count existing flags
             int flags_first = 0;
             int flags_second = 0;
@@ -309,7 +297,6 @@ void pattern_1_1(Minefield& field) {
                     flags_second++;
                 }
             }
-            // **********************************************
 
                 // Corrected logic: Only handle exactly 2 shared cells and no flags
                 if (shared_cells.size() == 2 && flags_first == 0 && flags_second == 0) {
@@ -558,9 +545,9 @@ void test_bot() {
 	Minefield field("dummy", 5, 2, {2,2});
 
     field.grid = {
-        {0, -1, 0, 0, -1},
-        {1, 1, 1, 1, 1},
-        {0,  0,  0, 0, 0},
+        {1,  1,  1, 0, 0},
+        {1,  -1,  1, 0, 0},
+        {1,  1,  1, 0, 0},
         {0,  0,  0, 0, 0},
         {0,  0,  0, 0, 0}
     };
@@ -570,11 +557,10 @@ void test_bot() {
     field.flags = std::vector<std::vector<bool>>(field.size, std::vector<bool>(field.size, false));
 
 	//Simulate bot revealing the 2
+    field.revealed[0][0] = true;
+	
+    field.revealed[0][1] = true;
     field.revealed[1][0] = true;
-    field.revealed[1][1] = true;
-    field.revealed[1][2] = true;
-    field.revealed[1][3] = true;
-    field.revealed[1][4] = true;
 
 	//debug prints
 	std::cout << "Initial grid:\n";
@@ -607,7 +593,7 @@ void test_bot() {
     field.output_field();
 
 	//run Bot
-	pattern_1_1(field);
+	B1(field);
 
     //Output the field after the bot has run
     std::cout << "\nBoard after bot:\n";
