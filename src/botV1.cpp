@@ -42,11 +42,11 @@ void B1(Minefield& field) {
             if (val > 0 && field.revealed[i][j]) {
 				//get unopened neighbors
 				std::vector<std::pair<int,int>> unopened_neighbors = get_unopened_neighbors(field, i, j);
-				std::cout<< "Checking (" << i << "," << j << "), val=" << val << ",unopened_neighbors=" << unopened_neighbors.size() << ": ";
+				//std::cout<< "Checking (" << i << "," << j << "), val=" << val << ",unopened_neighbors=" << unopened_neighbors.size() << ": ";
 				for (const std::pair<int, int>& n : unopened_neighbors) {
-					std::cout << "(" << n.first << "," << n.second << ") ";
+					//std::cout << "(" << n.first << "," << n.second << ") ";
 				}
-				std::cout << "\n";
+				//std::cout << "\n";
 				//if unopened neighbors equals the value of the tile mark the unopened neighbor as a mine
 				if (unopened_neighbors.size() == val) {
 					std::cout << "B1 triggered at (" << i << "," << j << "), marking mines\n";
@@ -59,7 +59,7 @@ void B1(Minefield& field) {
 
 
 void B2(Minefield& field) {
-    std::cout << "Running B2 detection...\n";
+    //std::cout << "Running B2 detection...\n";
 
     // Vector to store candidates
     std::vector<std::pair<int, int> > candidates;
@@ -83,11 +83,11 @@ void B2(Minefield& field) {
                     }
                 }
                 // Debug: Log checked cells
-                std::cout << "Checking (" << i << "," << j << "), val=" << val << ", flagged_neighbors=" << flagged_neighbors << "\n";
+                //std::cout << "Checking (" << i << "," << j << "), val=" << val << ", flagged_neighbors=" << flagged_neighbors << "\n";
                 // If flagged neighbors equal the value, add to candidates
                 if (flagged_neighbors == val) {
                     candidates.push_back(std::pair<int, int>(i, j));
-                    std::cout << "B2 candidate at (" << i << "," << j << "), flagged_neighbors=" << flagged_neighbors << "\n";
+                    //std::cout << "B2 candidate at (" << i << "," << j << "), flagged_neighbors=" << flagged_neighbors << "\n";
                 }
             }
         }
@@ -103,7 +103,7 @@ void B2(Minefield& field) {
             int x = neighbor_it->first;
             int y = neighbor_it->second;
             if (!field.flags[x][y]) { // Only reveal if not flagged
-                std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
+                std::cout << "  Safe to reveal: (" << x + 1 << "," << y + 1 << ")\n";
                 field.reveal_square(x, y);
             }
         }
@@ -502,18 +502,18 @@ void pattern_1_2_2_1(Minefield& field) {
     }
 }
 
-/*
+
 //eventually function to call to test all patterns at once
 void pattern_recognition(Minefield& field) {
     B1(field);
     B2(field);
-    pattern_1_1(field);
-    pattern_1_2(field);
-    pattern_1_2_corner(field);
-    pattern_1_2_1(field);
-    pattern_1_2_2_1(field);
+    //pattern_1_1(field);
+    //pattern_1_2(field);
+    //pattern_1_2_corner(field);
+    //pattern_1_2_1(field);
+    //pattern_1_2_2_1(field);
 }
-*/
+
 
 //bot output
 void bot_output_field(Minefield& field) {
@@ -542,7 +542,7 @@ void bot_output_field(Minefield& field) {
 //Helper function to simulate revealing and running the bot
 void test_bot() {
     //5x5 grid example (mines are marked as -1)
-	Minefield field("dummy", 5, 2, {2,2});
+	Minefield field("dummy", 5, 2, {0,0});
 
     field.grid = {
         {1,  1,  1, 0, 0},
@@ -557,12 +557,11 @@ void test_bot() {
     field.flags = std::vector<std::vector<bool>>(field.size, std::vector<bool>(field.size, false));
 
 	//Simulate bot revealing the 2
-    field.revealed[0][0] = true;
-	
-    field.revealed[0][1] = true;
-    field.revealed[1][0] = true;
-
-	//debug prints
+	field.revealed[0][0] = true;
+	field.revealed[0][1] = true;
+	field.revealed[1][0] = true;
+    
+/*	//debug prints
 	std::cout << "Initial grid:\n";
     for (int i = 0; i < field.size; i++) {
         for (int j = 0; j < field.size; j++) {
@@ -588,16 +587,20 @@ void test_bot() {
         std::cout << "\n";
     }
 
+	*/
+
     //Output the field before running the bot
     std::cout << "Board before bot:\n";
     field.output_field();
 
 	//run Bot
-	B1(field);
+	pattern_recognition(field);
+
 
     //Output the field after the bot has run
     std::cout << "\nBoard after bot:\n";
     bot_output_field(field);
+	
 }
 
 int main() {
