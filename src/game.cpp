@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
         switch (action) {
           case 'R': {
             while (true) {
-              std::cout << "Enter \"R\" to reveal: ";
+              std::cout << "Enter \"x y\" to reveal: ";
               std::cin >> x_str >> y_str;
               try {
                 x = std::stoi(x_str);
@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
 
           case 'F': {
             while (true) {
-              std::cout << "Enter \"F\" to flag/unflag: ";
+              std::cout << "Enter \"x y\" to flag/unflag: ";
               std::cin >> x_str >> y_str;
               try {
                 x = std::stoi(x_str);
