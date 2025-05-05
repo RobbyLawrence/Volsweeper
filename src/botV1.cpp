@@ -110,14 +110,18 @@ void B2(Minefield& field) {
     }
 }
 
-//pattern 1-1
+// Corrected 1-1 pattern detection
 void pattern_1_1(Minefield& field) {
     std::cout << "Running pattern_1_1 detection..." << std::endl;
+    bool made_move = false;
 
+    // Check horizontal patterns (same row, adjacent columns)
     for (int i = 0; i < field.size; i++) {
         for (int j = 0; j < field.size - 1; j++) {
             if (field.revealed[i][j] && field.revealed[i][j + 1] &&
                 field.grid[i][j] == 1 && field.grid[i][j + 1] == 1) {
+
+                std::cout << "  Found horizontal 1-1 pattern at (" << i << "," << j << ") and (" << i << "," << (j+1) << ")\n";
 
                 std::vector<std::pair<int, int>> cells_around_first;
                 std::vector<std::pair<int, int>> cells_around_second;
@@ -130,7 +134,7 @@ void pattern_1_1(Minefield& field) {
                     for (int dy = -1; dy <= 1; dy++) {
                         if (dx == 0 && dy == 0) continue;
                         int nx = i + dx;
-                        int ny = j + dy;
+                        int ny = j + 1 + dy;
                         if (nx >= 0 && nx < field.size && ny >= 0 && ny < field.size &&
                             !field.revealed[nx][ny]) {
                             cells_around_first.push_back(std::make_pair(nx, ny));
@@ -151,12 +155,13 @@ void pattern_1_1(Minefield& field) {
                     }
                 }
 
+                std::cout << "  First 1 has " << cells_around_first.size() << " unrevealed neighbors\n";
+                std::cout << "  Second 1 has " << cells_around_second.size() << " unrevealed neighbors\n";
+
                 // Find shared and exclusive cells
-                for (size_t a = 0; a < cells_around_first.size(); a++) {
-                    std::pair<int, int> cell1 = cells_around_first[a];
+                for (const auto& cell1 : cells_around_first) {
                     bool shared = false;
-                    for (size_t b = 0; b < cells_around_second.size(); b++) {
-                        std::pair<int, int> cell2 = cells_around_second[b];
+                    for (const auto& cell2 : cells_around_second) {
                         if (cell1.first == cell2.first && cell1.second == cell2.second) {
                             shared = true;
                             shared_cells.push_back(cell1);
@@ -168,11 +173,9 @@ void pattern_1_1(Minefield& field) {
                     }
                 }
 
-                for (size_t b = 0; b < cells_around_second.size(); b++) {
-                    std::pair<int, int> cell2 = cells_around_second[b];
+                for (const auto& cell2 : cells_around_second) {
                     bool shared = false;
-                    for (size_t a = 0; a < cells_around_first.size(); a++) {
-                        std::pair<int, int> cell1 = cells_around_first[a];
+                    for (const auto& cell1 : cells_around_first) {
                         if (cell2.first == cell1.first && cell2.second == cell1.second) {
                             shared = true;
                             break;
@@ -183,66 +186,166 @@ void pattern_1_1(Minefield& field) {
                     }
                 }
 
-                // Logic: if exactly 2 shared cells, 1 is a mine → safe to open exclusives
-                if (shared_cells.size() == 2) {
-                    int flags_first = 0;
-                    int flags_second = 0;
+                std::cout << "  Shared cells: " << shared_cells.size() << "\n";
+                std::cout << "  Exclusive to first: " << exclusive_to_first.size() << "\n";
+                std::cout << "  Exclusive to second: " << exclusive_to_second.size() << "\n";
 
-                    for (size_t k = 0; k < cells_around_first.size(); k++) {
-                        int x = cells_around_first[k].first;
-                        int y = cells_around_first[k].second;
-                        if (field.flags[x][y]) {
-                            flags_first++;
+                // Count existing flags
+                int flags_first = 0;
+                int flags_second = 0;
+
+                for (const auto& cell : cells_around_first) {
+                    if (field.flags[cell.first][cell.second]) {
+                        flags_first++;
+                    }
+                }
+
+                for (const auto& cell : cells_around_second) {
+                    if (field.flags[cell.first][cell.second]) {
+                        flags_second++;
+                    }
+                }
+
+                std::cout << "  First 1 has " << flags_first << " flags\n";
+                std::cout << "  Second 1 has " << flags_second << " flags\n";
+
+                // Corrected logic: Only handle exactly 2 shared cells and no flags
+                if (shared_cells.size() == 2 && flags_first == 0 && flags_second == 0) {
+                    std::cout << "  1-1 Pattern: Found " << shared_cells.size() << " shared cells\n";
+                    std::cout << "  1-1 Pattern: Revealing exclusive cells\n";
+
+                    // Reveal safe exclusive cells
+                    for (const auto& cell : exclusive_to_first) {
+                        int x = cell.first;
+                        int y = cell.second;
+                        if (!field.flags[x][y]) {
+                            std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
+                            field.reveal_square(x, y);
+                            made_move = true;
                         }
                     }
 
-                    for (size_t k = 0; k < cells_around_second.size(); k++) {
-                        int x = cells_around_second[k].first;
-                        int y = cells_around_second[k].second;
-                        if (field.flags[x][y]) {
-                            flags_second++;
-                        }
-                    }
-
-                    if (flags_first == 0 && flags_second == 0) {
-                        std::cout << "  1-1 Pattern: Found 2 shared cells, flag one and open exclusives\n";
-
-                        // Flag one of the shared cells
-                        for (size_t k = 0; k < shared_cells.size(); k++) {
-                            int x = shared_cells[k].first;
-                            int y = shared_cells[k].second;
-                            if (!field.flags[x][y]) {
-                                std::cout << "  Flagging: (" << x << "," << y << ")\n";
-                                field.flags[x][y] = true;
-                                break; // Only flag one
-                            }
-                        }
-
-                        // Reveal safe exclusive cells
-                        for (size_t k = 0; k < exclusive_to_first.size(); k++) {
-                            int x = exclusive_to_first[k].first;
-                            int y = exclusive_to_first[k].second;
-                            if (!field.flags[x][y]) {
-                                std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
-                                field.reveal_square(x, y);
-                            }
-                        }
-
-                        for (size_t k = 0; k < exclusive_to_second.size(); k++) {
-                            int x = exclusive_to_second[k].first;
-                            int y = exclusive_to_second[k].second;
-                            if (!field.flags[x][y]) {
-                                std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
-                                field.reveal_square(x, y);
-                            }
+                    for (const auto& cell : exclusive_to_second) {
+                        int x = cell.first;
+                        int y = cell.second;
+                        if (!field.flags[x][y]) {
+                            std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
+                            field.reveal_square(x, y);
+                            made_move = true;
                         }
                     }
                 }
             }
         }
     }
-}
+
+    // Check vertical patterns (same column, adjacent rows) - same corrections applied
+    for (int j = 0; j < field.size; j++) {
+        for (int i = 0; i < field.size - 1; i++) {
+            if (field.revealed[i][j] && field.revealed[i + 1][j] &&
+                field.grid[i][j] == 1 && field.grid[i + 1][j] == 1) {
+
+                std::cout << "  Found vertical 1-1 pattern at (" << i << "," << j << ") and (" << (i+1) << "," << j << ")\n";
+
                 
+				
+				
+				// ... [same changes as horizontal check] ...
+				 // ********** ADDED VARIABLE DECLARATIONS **********
+            std::vector<std::pair<int, int>> cells_around_first;
+            std::vector<std::pair<int, int>> cells_around_second;
+            std::vector<std::pair<int, int>> shared_cells;
+            std::vector<std::pair<int, int>> exclusive_to_first;
+            std::vector<std::pair<int, int>> exclusive_to_second;
+            // ***********************************************
+
+			// ********** ADDED CELL COLLECTION FOR FIRST 1 **********
+            // Cells around the first 1
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dy = -1; dy <= 1; dy++) {
+                    if (dx == 0 && dy == 0) continue;
+                    int nx = i + dx;
+                    int ny = j + dy;
+                    if (nx >= 0 && nx < field.size && ny >= 0 && ny < field.size &&
+                        !field.revealed[nx][ny]) {
+                        cells_around_first.push_back(std::make_pair(nx, ny));
+                    }
+                }
+            }
+
+			 // *****************************************************
+
+            // ********** ADDED CELL COLLECTION FOR SECOND 1 **********
+            // Cells around the second 1
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dy = -1; dy <= 1; dy++) {
+                    if (dx == 0 && dy == 0) continue;
+                    int nx = i + 1 + dx;
+                    int ny = j + dy;
+                    if (nx >= 0 && nx < field.size && ny >= 0 && ny < field.size &&
+                        !field.revealed[nx][ny]) {
+                        cells_around_second.push_back(std::make_pair(nx, ny));
+                    }
+                }
+            }
+
+			 // ********** ADDED SHARED/EXCLUSIVE CELL ANALYSIS **********
+            // [The entire section finding shared/exclusive cells...]
+            // ********************************************************
+
+            // ********** ADDED FLAG COUNTING LOGIC **********
+            // Count existing flags
+            int flags_first = 0;
+            int flags_second = 0;
+
+            for (const auto& cell : cells_around_first) {
+                if (field.flags[cell.first][cell.second]) {
+                    flags_first++;
+                }
+            }
+
+			for (const auto& cell : cells_around_second) {
+                if (field.flags[cell.first][cell.second]) {
+                    flags_second++;
+                }
+            }
+            // **********************************************
+
+                // Corrected logic: Only handle exactly 2 shared cells and no flags
+                if (shared_cells.size() == 2 && flags_first == 0 && flags_second == 0) {
+                    std::cout << "  1-1 Pattern: Found " << shared_cells.size() << " shared cells\n";
+                    std::cout << "  1-1 Pattern: Revealing exclusive cells\n";
+
+                    // Reveal safe exclusive cells
+                    for (const auto& cell : exclusive_to_first) {
+                        int x = cell.first;
+                        int y = cell.second;
+                        if (!field.flags[x][y]) {
+                            std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
+                            field.reveal_square(x, y);
+                            made_move = true;
+                        }
+                    }
+
+                    for (const auto& cell : exclusive_to_second) {
+                        int x = cell.first;
+                        int y = cell.second;
+                        if (!field.flags[x][y]) {
+                            std::cout << "  Safe to reveal: (" << x << "," << y << ")\n";
+                            field.reveal_square(x, y);
+                            made_move = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (!made_move) {
+        std::cout << "  No valid 1-1 patterns found or no moves made\n";
+    }
+}
+
 //1-2
 //when two horizontal cells are labeled 1 and 2 and they share 2 unopened cells one of those
 //cells must be a mine and the other can potentially be opened
@@ -359,8 +462,8 @@ void pattern_1_2_1(Minefield& field) {
                     for (const auto& cell : middle_2_neighbors) {
                         if (field.flags[cell.first][cell.second]) flags_middle++;
                     }
-                    for (const auto& cell : right_1_neighbors) {
-                        if (field.flags[cell.first][cell.second]) flags_right++;
+					for (const auto& cell : right_1_neighbors) {
+						if (field.flags[cell.first][cell.second]) flags_right++;
                     }
 
                     // Apply pattern if no flags interfere
@@ -412,7 +515,7 @@ void pattern_1_2_2_1(Minefield& field) {
     }
 }
 
-
+/*
 //eventually function to call to test all patterns at once
 void pattern_recognition(Minefield& field) {
     B1(field);
@@ -423,6 +526,7 @@ void pattern_recognition(Minefield& field) {
     pattern_1_2_1(field);
     pattern_1_2_2_1(field);
 }
+*/
 
 //bot output
 void bot_output_field(Minefield& field) {
@@ -451,35 +555,26 @@ void bot_output_field(Minefield& field) {
 //Helper function to simulate revealing and running the bot
 void test_bot() {
     //5x5 grid example (mines are marked as -1)
-    Minefield field("dummy", 5, 1); 
+	Minefield field("dummy", 5, 2, {2,2});
 
-	// Setup a 5x5 grid with B1, B2, and 1-2-1 patterns
-	field.grid = {
-    {1, -1, 0, 0, 0},    // Row 0: B1 mine at [0][1]
-    {2, -1, 1, 0, 0},    // Row 1: B1 at [1][0]=2, 1-2-1 mine at [1][2]
-    {1, 1, 2, 1, 0},     // Row 2: 1-2-1 pattern at [2][1]=1, [2][2]=2, [2][3]=1
-    {-1, 1, -1, 1, 2},    // Row 3: 1-2-1 mine at [3][2], B2 at [3][4]=2
-    {-1, 1, 0, 1, -1}     // Row 4: B2 mine at [4][4]
-	};
+    field.grid = {
+        {0, -1, 0, 0, -1},
+        {1, 1, 1, 1, 1},
+        {0,  0,  0, 0, 0},
+        {0,  0,  0, 0, 0},
+        {0,  0,  0, 0, 0}
+    };
 
-	// Reveal cells to trigger B1, B2, and 1-2-1
-	field.revealed = {
-    {false, false, false, false, false}, // Row 0
-    {true, false, false, false, false},  // Row 1: B1 at [1][0]
-    {false, true, true, true, false},    // Row 2: 1-2-1 at [2][1], [2][2], [2][3]
-    {false, false, false, false, true},  // Row 3: B2 at [3][4]
-    {false, false, false, false, false}  // Row 4
-	};
+	//Resize and initialize supporting structures
+    field.revealed = std::vector<std::vector<bool>>(field.size, std::vector<bool>(field.size, false));
+    field.flags = std::vector<std::vector<bool>>(field.size, std::vector<bool>(field.size, false));
 
-	// Initialize flags (set for B2 pattern)
-	field.flags = {
-    {false, false, false, false, false},
-    {false, false, false, false, false},
-    {false, false, false, false, false},
-    {false, false, false, false, true},  // Flag at [3][4] for B2
-    {false, false, false, false, true}   // Flag at [4][4] for B2
-	};
-
+	//Simulate bot revealing the 2
+    field.revealed[1][0] = true;
+    field.revealed[1][1] = true;
+    field.revealed[1][2] = true;
+    field.revealed[1][3] = true;
+    field.revealed[1][4] = true;
 
 	//debug prints
 	std::cout << "Initial grid:\n";
@@ -497,6 +592,7 @@ void test_bot() {
         }
         std::cout << "\n";
     }
+
 	//prints whether a flag is currently marked
     std::cout << "Initial flags state:\n";
     for (int i = 0; i < field.size; i++) {
@@ -506,13 +602,14 @@ void test_bot() {
         std::cout << "\n";
     }
 
-    // Output the field before running the bot
+    //Output the field before running the bot
     std::cout << "Board before bot:\n";
     field.output_field();
 
-	//run B2
-	pattern_recognition(field);
-    // Output the field after the bot has run
+	//run Bot
+	pattern_1_1(field);
+
+    //Output the field after the bot has run
     std::cout << "\nBoard after bot:\n";
     bot_output_field(field);
 }
