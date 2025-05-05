@@ -21,7 +21,8 @@ struct Minefield {
     std::string output_string(); // the other output methods only show revealed squares
     void output_field();
     void reveal_square(int x, int y);
-    void flag_square(int x, int y);
+    bool flag_square(int x, int y);
+    void chord(int x, int y);
 };
 
 bool check_status(Minefield field);
