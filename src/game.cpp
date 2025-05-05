@@ -27,7 +27,10 @@ int main(int argc, char* argv[]) {
         std::cerr << "Out of range: " << error.what() << std::endl;
         return 1;
     }
-    int x,y = -1;
+    std::string x_str = "-1";
+    std::string y_str = "-1";
+    int x = std::stoi(x_str);
+    int y = std::stoi(y_str);
     int placed_flags = 0;
     char action;
     bool game_over = false;
@@ -41,7 +44,17 @@ int main(int argc, char* argv[]) {
     std::cout << "What square would you like to reveal first? ";
     while (true) {
         std::cout << "Enter your response as \"x y\": ";
-        std::cin >> x >> y; // error checking input
+        std::cin >> x_str >> y_str; // error checking input
+        try {
+            x = std::stoi(x_str);
+            y = std::stoi(y_str);
+        } catch (const std::invalid_argument& error) {
+            std::cerr << "Invalid coordinates.\n";
+            continue;
+        } catch (const std::out_of_range& error) {
+            std::cerr << "Out of range.\n";
+            continue;
+        }
         if (size - y >= 0 && x - 1 >= 0 && size - y < size && x - 1 < size) {
             goto begingame; // used a goto here so that I don't have to worry about scope
         }
@@ -52,70 +65,87 @@ int main(int argc, char* argv[]) {
     field.reveal_square(size-y,x-1);
     field.debug_output_field();
     field.output_field();
+    // the game functions with a big game loop.
+    //
     while (!game_over) {
         std::cout << "What action would you like to take? ";
         std::cin >> action;
-        switch (action) {
-            case 'R':
-            std::cout << "What square would you like to reveal? ";
-            while (true) {
-                std::cout << "Enter your response as \"x y\": ";
-                std::cin >> x >> y; // error checking input
-                if (size - y >= 0 && x - 1 >= 0 && size - y < size && x - 1 < size) {
 
-                    break;
-                }
-                std::cout << "Invalid coordinates. Please try again. \n";
-            }
-            field.reveal_square(size-y,x-1);
-            field.output_field();
-            if (field.grid[size-y][x-1] == -1) {
-                std::cout << "You hit a mine!\n";
-                game_over = true;
-            }
-            for (std::vector<bool> vect : field.revealed) {
-                for (bool element : vect) {
-                    if (element == false) {
-                        // i know goto is a bad practice, but i didn't want to use another bool
-                        goto endloops;
-                        // here, this works as a two-layer break
-                    }
-                }
-            }
-            // we'll only ever arrive here if everything in field.revealed is true
-            std::cout << "You won!";
-            game_over = true;
-            endloops:
-            break;
-            case 'H':
-            std::cout << "Possible actions:\n\"R\" - reveal a square\n\"F\" - flag/unflag a square\n\"H\" - view this menu\n";
-            break;
-            case 'F':
-            std::cout << "What square would you like to flag? ";
+        switch (action) {
+          case 'R': {
             while (true) {
-                std::cout << "Enter your response as \"x y\": ";
-                std::cin >> x >> y; // error checking input
-                if (size - y >= 0 && x - 1 >= 0 && size - y < size && x - 1 < size) {
-                    break;
-                }
-                std::cout << "Invalid coordinates. Please try again. \n";
+              std::cout << "Enter \"R\" to reveal: ";
+              std::cin >> x_str >> y_str;
+              try {
+                x = std::stoi(x_str);
+                y = std::stoi(y_str);
+              } catch (...) {
+                std::cerr << "Invalid coordinates; try again.\n";
+                continue;
+              }
+              if (x >= 1 && x <= size && y >= 1 && y <= size) {
+                break;  // valid coordinate
+              }
+              std::cerr << "Coordinates out of range; must be 1–" << size << ".\n";
             }
-            field.flag_square(size-y,x-1);
-            placed_flags++;
+            // convert to 0-based row/col
+            int row = size - y;
+            int col = x - 1;
+            if (field.revealed[row][col]) {
+              field.chord(row, col);
+            }
+            field.reveal_square(row, col);
+            field.output_field();
+
+            if (field.grid[row][col] == -1) {
+              std::cout << "You hit a mine!\n";
+              game_over = true;
+            }
+            break;
+          }
+
+          case 'F': {
+            while (true) {
+              std::cout << "Enter \"F\" to flag/unflag: ";
+              std::cin >> x_str >> y_str;
+              try {
+                x = std::stoi(x_str);
+                y = std::stoi(y_str);
+              } catch (...) {
+                std::cerr << "Invalid coordinates; try again.\n";
+                continue;
+              }
+              if (x >= 1 && x <= size && y >= 1 && y <= size) {
+                break;
+              }
+              std::cerr << "Coordinates out of range; must be 1–"
+                        << size << ".\n";
+            }
+            int row = size - y, col = x - 1;
+            if (field.flag_square(row, col)) {
+              placed_flags++;
+            }
             field.output_field();
             break;
-            default:
-            std::cout << "Unknown action. Please try again, or use the \"H\" command to view available actions.\n";
+          }
+
+          case 'H':
+            std::cout
+              << "Possible actions:\n"
+              << "  R – reveal a square\n"
+              << "  F – flag/unflag a square\n"
+              << "  H – show this menu\n";
             break;
+
+          default:
+            std::cout << "Unknown action. Type H for help.\n";
         }
+
+        // call check_status exactly once
         if (check_status(field)) {
-            std::cout << "You won the game!\n";
-            break; // this ends the game loop
-        }
-        else if (!check_status(field) && placed_flags == num_mines) {
-            std::cout << "Your solution is incorrect!\n";
-            break;
+          game_over = true;
         }
     }
+
     return 0;
 }

@@ -184,7 +184,7 @@ Minefield::Minefield(std::string flag, size_t size_c, size_t num_mines_c, std::p
             grid[r][c] = -1;
         }
 
-        // fill in neighbor counts
+        // fill in mine counts
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {
                 if (grid[i][j] != -1) continue;
@@ -300,49 +300,46 @@ void Minefield::reveal_square(int x, int y) {
     return;
 }
 
-void Minefield::flag_square(int x, int y) {
+bool Minefield::flag_square(int x, int y) {
     if (revealed[x][y]) {
         std::cout << "Can't flag a square that's already revealed\n";
-        return; // we don't want to flag a revealed square
+        return false; // we don't want to flag a revealed square
     }
     if (flagged[x][y]) {
         flagged[x][y] = false; // let the user unflag a square
-        return;
+        return true;
     }
     flagged[x][y] = true;
-    return;
+    return true;
+}
+
+void Minefield::chord(int x, int y) {
+    for (int i = -1;i<=1;i++) {
+        for (int j = -1;j<=1;j++) {
+            if (x+i < size && x+i >= 0 && y+j < size && y+j >= 0) {
+                if (flagged[x+i][y+j]) {
+                    continue;
+                }
+                // adjacent cell exists
+                reveal_square(x+i, y+j);
+            }
+        }
+    }
 }
 
 bool check_status(Minefield field) {
-    size_t flags_placed  = 0;
-    size_t correct_flags = 0;
-    size_t N = field.size;
-
-    // 1) Count flags and correct flags
-    for (size_t r = 0; r < N; ++r) {
-        for (size_t c = 0; c < N; ++c) {
-            if (!field.flagged[r][c])
-                continue;
-
-            ++flags_placed;
-
-            // flatten (r,c) to index in field.mines:
-            size_t idx = r * N + c;
-            if (field.mines[idx])
-                ++correct_flags;
+    // loop over every cell
+    for (size_t r = 0; r < field.size; ++r) {
+        for (size_t c = 0; c < field.size; ++c) {
+            // if this cell is NOT a mine (grid[r][c] != -1)
+            // but also not yet revealed the game should keep running
+            if (field.grid[r][c] != -1 && !field.revealed[r][c]) {
+                return false;
+            }
         }
     }
 
-    // if not all flags used, game still in progress
-    if (flags_placed < field.num_mines) {
-        return false;
-    }
-
-    // if we've used all flags, we have to check correctness
-    if (correct_flags == field.num_mines) {
-        std::cout << "You win the game!\n";
-    } else {
-        std::cout << "You've placed at least one incorrect flag!\n";
-    }
-    return true;  // game over
+    // if we get here, every non-mine square is revealed → win
+    std::cout << "You win the game!\n";
+    return true;
 }
