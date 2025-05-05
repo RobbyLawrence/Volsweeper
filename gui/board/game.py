@@ -1,5 +1,8 @@
-#!/usr/bin/env python3
-import sys, os
+import pygame
+import sys
+import os
+import tkinter as tk
+from tkinter import messagebox
 
 # —————————————————————————————
 # 1) Make sure Python can find your compiled extension:
@@ -8,87 +11,80 @@ build_dir  = os.path.join(script_dir, "build")
 sys.path.insert(0, build_dir)
 # —————————————————————————————
 
-import pygame
 import volsweeper_binding as vb
 
-# —————————————————————————————
-# 2) Board parameters
+# Constants
 WIDTH, HEIGHT, MINES = 10, 10, 15
-cell_size = 40
-# —————————————————————————————
+CELL_SIZE = 40
 
-# 3) Initialize C++ logic
-vs = vb.Minefield("-r", WIDTH, MINES)
 
-# 4) Pull initial state
-grid     = vs.get_grid()      # [[int]]
-revealed = vs.get_revealed()  # [[bool]]
+def show_exit_popup(title="Game Over", message="Thanks for playing!"):
+    root = tk.Tk()
+    root.withdraw()
+    messagebox.showinfo(title, message)
+    root.destroy()
+    pygame.quit()
+    sys.exit()
 
-# —————————————————————————————
-# 5) Pygame setup
-pygame.init()
-screen = pygame.display.set_mode((WIDTH * cell_size, HEIGHT * cell_size))
-pygame.display.set_caption("VolSweeper GUI")
-font = pygame.font.Font(None, 24)
-# —————————————————————————————
 
-def draw_board(grid, revealed):
-    """Draw the entire board: grid holds -1 or counts, revealed flags open tiles."""
-    screen.fill((0, 0, 0))  # background
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH * CELL_SIZE, HEIGHT * CELL_SIZE))
+    pygame.display.set_caption("Minesweeper")
 
-    for y, row in enumerate(grid):
-        for x, val in enumerate(row):
-            rect = pygame.Rect(x * cell_size, y * cell_size, cell_size, cell_size)
+    # Create Minefield: pass flag string as first argument
+    vs = vb.Minefield("-r", WIDTH, MINES)
+    first_click = True
 
-            # fill revealed tiles with a dark grey so numbers show up
-            if revealed[y][x]:
-                pygame.draw.rect(screen, (50, 50, 50), rect)
-            # else: leave it black for unrevealed
+    # Initialize board state for drawing
+    grid = vs.get_grid()
+    revealed = vs.get_revealed()
 
-            # draw the tile border
-            pygame.draw.rect(screen, (200, 200, 200), rect, 1)
+    running = True
+    while running:
+        for ev in pygame.event.get():
+            if ev.type == pygame.QUIT:
+                show_exit_popup("Goodbye!", "You closed the window.")
 
-            # if it’s revealed, draw a mine or a number
-            if revealed[y][x]:
-                if val == -1:
-                    # draw a red mine
-                    pygame.draw.circle(
-                        screen,
-                        (255, 0, 0),
-                        rect.center,
-                        cell_size // 4
-                    )
-                elif val > 0:
-                    # draw the adjacent‑mine count in white
-                    txt = font.render(str(val), True, (255, 255, 255))
-                    screen.blit(txt, (rect.x + cell_size//4, rect.y + cell_size//4))
+            elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
+                show_exit_popup("Exited", "Escape pressed—exiting the game.")
 
-    pygame.display.flip()
+            elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
+                mx, my = ev.pos
+                col, row = mx // CELL_SIZE, my // CELL_SIZE
 
-# 6) Draw the starting board
-draw_board(grid, revealed)
+                if first_click:
+                    # Generate mines avoiding the first-click zone
+                    vs.generate(row, col)
+                    first_click = False
 
-# —————————————————————————————
-# 7) Main event loop: handle clicks + quit
-running = True
-while running:
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT:
-            running = False
+                # Reveal the clicked square (and flood-fill zeros)
+                vs.reveal_square(row, col)
+                grid = vs.get_grid()
+                revealed = vs.get_revealed()
 
-        # Left‑click to reveal a tile
-        elif e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
-            mx, my = e.pos
-            tx, ty = mx // cell_size, my // cell_size
+                # If user hit a mine, end game
+                if grid[row][col] == -1:
+                    show_exit_popup("Game Over", "You hit a mine!")
 
-            # a) update C++ state
-            vs.reveal_square(ty, tx)
+        # Draw board
+        screen.fill((192, 192, 192))
+        font = pygame.font.SysFont(None, 24)
+        for r in range(HEIGHT):
+            for c in range(WIDTH):
+                rect = pygame.Rect(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+                pygame.draw.rect(screen, (128, 128, 128), rect, 1)
+                if revealed[r][c]:
+                    val = grid[r][c]
+                    if val > 0:
+                        txt = font.render(str(val), True, (0, 0, 0))
+                        screen.blit(txt, txt.get_rect(center=rect.center))
+                    elif val == -1:
+                        pygame.draw.circle(screen, (0, 0, 0), rect.center, CELL_SIZE // 4)
 
-            # b) re‑fetch updated revealed grid
-            revealed = vs.get_revealed()
+        pygame.display.flip()
 
-            # c) redraw with numbers and bombs
-            draw_board(grid, revealed)
 
-pygame.quit()
+if __name__ == "__main__":
+    main()
 
