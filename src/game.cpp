@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     int x,y = -1;
+    int placed_flags = 0;
     char action;
     bool game_over = false;
     for (size_t i = 0;i<size;i++) { // print the first board
@@ -48,6 +49,9 @@ int main(int argc, char* argv[]) {
     }
     begingame:
     Minefield field = Minefield(argv[1], size, num_mines, std::make_pair(x,y));
+    field.reveal_square(size-y,x-1);
+    field.debug_output_field();
+    field.output_field();
     while (!game_over) {
         std::cout << "What action would you like to take? ";
         std::cin >> action;
@@ -84,7 +88,7 @@ int main(int argc, char* argv[]) {
             endloops:
             break;
             case 'H':
-            std::cout << "Possible actions:\n\"R\" - reveal a square\n\"F\" - flag a square\n\"H\" - view this menu\n";
+            std::cout << "Possible actions:\n\"R\" - reveal a square\n\"F\" - flag/unflag a square\n\"H\" - view this menu\n";
             break;
             case 'F':
             std::cout << "What square would you like to flag? ";
@@ -97,10 +101,19 @@ int main(int argc, char* argv[]) {
                 std::cout << "Invalid coordinates. Please try again. \n";
             }
             field.flag_square(size-y,x-1);
+            placed_flags++;
             field.output_field();
             break;
             default:
             std::cout << "Unknown action. Please try again, or use the \"H\" command to view available actions.\n";
+            break;
+        }
+        if (check_status(field)) {
+            std::cout << "You won the game!\n";
+            break; // this ends the game loop
+        }
+        else if (!check_status(field) && placed_flags == num_mines) {
+            std::cout << "Your solution is incorrect!\n";
             break;
         }
     }

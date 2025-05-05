@@ -10,6 +10,7 @@ struct Minefield {
     size_t num_mines;
     // entry will be -1 for mines and otherwise represent number of mines adjacent
     std::vector<std::vector<int> > grid;
+    std::vector<bool> mines;
     std::vector<std::vector<bool> > revealed;
     std::vector<std::vector<bool> > flagged;
     void increment_grid_entry(int i, int j);
@@ -22,4 +23,4 @@ struct Minefield {
     void flag_square(int x, int y);
 };
 
-bool check_bounds(size_t size, size_t x, size_t y);
+bool check_status(Minefield field);
