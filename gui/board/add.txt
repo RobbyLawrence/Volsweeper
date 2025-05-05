@@ -1,0 +1,7 @@
+after talking with zach at lab he recommends to add
+- amount of flags added
+- time it takes to play game
+- hint button
+- score?
+- make it look cleaner
+- add 
