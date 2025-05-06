@@ -26,3 +26,11 @@ struct Minefield {
 };
 
 bool check_status(Minefield field);
+
+std::vector<std::pair<int, int>> get_unopened_neighbors(const Minefield& field, int i, int j);
+
+void mark_mines(Minefield& field, std::vector<std::pair<int, int>> neighbors);
+
+std::vector<std::pair<int,int> > B1(Minefield& field);
+
+std::vector<std::pair<int,int> > B2(Minefield& field);
