@@ -58,11 +58,18 @@ Brett
 Total Hours: 28
 
 Robby
-3/31 Started research for board generation (3 hours)
-4/15 Implemented square revealing in board (5 hours)
-4/30 Added flagging implementation (4 hours)
+3/26 Created repository, build system, Minefield struct (2.5 hours)
+3/27 Began random mine generation code (1.5 hours)
+3/28-3/30 reworking Minefield constructor (2 hours)
+3/31 Research for solvability, library management (2.5 hours)
+4/14-4/15 Recursive square revealing (5 hours)
+4/28-4/29 Game loop debugging (4 hours)
+4/30 Implemented flagging (2 hours)
+5/1-5/2 Partial safe board gen (4 hours)
+5/4-5/5 Rewrite game logic, add -r to constructor (3.5 hours)
+5/6 Finish -r option for constructor, add colors, combine bot into command line player (6 hours)
 
-Total Hours: 
+Total Hours: 33
 
 Matthew
 3/31 Started GUI research (4 hours)
