@@ -11,7 +11,8 @@ std::vector<std::pair<int, int>> get_unopened_neighbors(const Minefield& field, 
         for (int y = -1; y <= 1; y++) {
             //skip the center cell
             if (x== 0 && y == 0) continue;
-            int nx = i + x, ny = j + y;
+            int nx = i + x;
+            int ny = j + y;
             //check bounds and unopened cell
             if (nx >= 0 && nx < field.size && ny >= 0 && ny < field.size && !field.revealed[nx][ny]) {
                 neighbors.push_back({nx, ny});
@@ -32,29 +33,35 @@ void mark_mines(Minefield& field, std::vector<std::pair<int, int>> neighbors) {
 }
 
 // B1 (If the number of the square is the same as the adjacent squares then all of the squares are mines)
-std::vector<std::pair<int,int> > B1(Minefield& field) {
-    std::vector<std::pair<int,int> > empty_vect;
-    //loop through the board
-    for (int i = 0; i < field.size; i++) {
-        for (int j = 0; j < field.size; j++) {
-            int val = field.grid[i][j];
-            //check only for revealed cells with a number > 0
-            if (field.flagged[i][j] == true) {
+std::vector<std::pair<int,int> > B1(Minefield& f) {
+    std::vector<std::pair<int,int>> to_flag;
+
+    for (int i = 0; i < f.size; ++i) {
+        for (int j = 0; j < f.size; ++j) {
+            if (!f.revealed[i][j] || f.grid[i][j] <= 0)
                 continue;
-            }
-            if (val > 0 && field.revealed[i][j]) {
-                //get unopened neighbors
-                std::vector<std::pair<int,int> > unopened_neighbors = get_unopened_neighbors(field, i, j);
-                //if unopened neighbors equals the value of the tile mark the unopened neighbor as a mine
-                if (unopened_neighbors.size() == val) {
-                    return unopened_neighbors;
+
+            // collect all *unrevealed & unflagged* neighbors
+            std::vector<std::pair<int,int>> cand;
+            for (int di = -1; di <= 1; ++di) {
+                for (int dj = -1; dj <= 1; ++dj) {
+                    if (di==0 && dj==0) continue;
+                    int ni = i+di, nj = j+dj;
+                    if (ni>=0 && ni<f.size && nj>=0 && nj<f.size
+                     && !f.revealed[ni][nj] && !f.flagged[ni][nj]) {
+                        cand.emplace_back(ni,nj);
+                    }
                 }
+            }
+            // if exactly grid[i][j] of these remain, they must all be mines
+            if ((int)cand.size() == f.grid[i][j]) {
+                to_flag.insert(to_flag.end(), cand.begin(), cand.end());
             }
         }
     }
-    return empty_vect; // if we got here, there were no viable squares
-}
 
+    return to_flag;
+}
 
 std::vector<std::pair<int,int> > B2(Minefield& field) {
     // Vector to store candidates

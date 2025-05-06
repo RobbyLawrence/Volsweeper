@@ -12,7 +12,6 @@ struct Minefield {
     std::vector<std::vector<int> > grid;
     std::vector<bool> mines;
     std::vector<std::vector<bool> > revealed;
-	std::vector<std::vector<bool> > flags;
     std::vector<std::vector<bool> > flagged;
     void increment_grid_entry(int i, int j);
     Minefield(std::string flag, size_t size_c, size_t num_mines_c, std::pair<size_t,size_t> initial_square);
