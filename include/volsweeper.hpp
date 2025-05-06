@@ -30,6 +30,11 @@ std::vector<std::pair<int, int>> get_unopened_neighbors(const Minefield& field, 
 
 void mark_mines(Minefield& field, std::vector<std::pair<int, int>> neighbors);
 
-std::vector<std::pair<int,int> > B1(Minefield& field);
+//std::vector<std::pair<int,int> > B1(Minefield& field);
+//std::vector<std::pair<int,int> > B2(Minefield& field);
 
-std::vector<std::pair<int,int> > B2(Minefield& field);
+std::pair<int, int> B1(Minefield& field);
+std::pair<int, int> B2(Minefield& field);
+
+std::pair<int, int> pattern_recognition(Minefield& field);
+//void pattern_recognition(Minefield& field);
