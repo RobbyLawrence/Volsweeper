@@ -2,6 +2,8 @@
 import sys
 import os
 import time
+import tkinter as tk
+from tkinter import messagebox
 
 # —————————————————————————————
 # 1) Make sure Python can find your compiled extension:
@@ -30,6 +32,7 @@ BORDER_COLOR     = (0, 0, 0)        # black border
 ACCENT_COLOR     = (255, 165, 0)    # orange accent
 TEXT_COLOR       = (0, 0, 0)        # black text/numbers
 MINE_COLOR       = (255, 0, 0)      # red mines
+
 # —————————————————————————————
 
 
@@ -41,11 +44,9 @@ def load_flag_image(path="volsFlag.jpg"):
 def draw_board(screen, font, grid, revealed, flags, flag_img, elapsed_time):
     screen.fill(BG_COLOR)
 
-    # Timer (top-left)
     timer_txt = font.render(f"Time: {int(elapsed_time)}s", True, TEXT_COLOR)
     screen.blit(timer_txt, (5, 5))
 
-    # Flags used (top-right)
     flag_txt = font.render(f"Flags: {len(flags)}/{MINES}", True, TEXT_COLOR)
     screen_width = WIDTH * CELL_SIZE
     flag_rect = flag_txt.get_rect(topright=(screen_width - 5, 5))
@@ -73,6 +74,18 @@ def draw_board(screen, font, grid, revealed, flags, flag_img, elapsed_time):
                 screen.blit(flag_img, rect.topleft)
 
     pygame.display.flip()
+
+
+def show_game_over_popup():
+    pygame.quit() #shutdown pygame so tinker can work
+
+    root = tk.Tk()
+    root.withdraw()
+    result = messagebox.askquestion("Game Over", "You hit a mine!\nDo you want to restart the game?", icon='warning')
+    if result == 'yes':
+        os.execl(sys.executable, sys.executable, *sys.argv)
+    else:
+        sys.exit()
 
 
 def main():
@@ -110,10 +123,10 @@ def main():
                     vs = vb.Minefield("-r", WIDTH, MINES, (row, col))
                     grid = vs.get_grid()
                     revealed = vs.get_revealed()
-                    if revealed[row][col]:         # CLI-style behavior
+                    if revealed[row][col]:
                         vs.chord(row, col)
                     vs.reveal_square(row, col)
-                    revealed = vs.get_revealed()   # fetch again after revealing
+                    revealed = vs.get_revealed()
                     start_time = time.time()
                 elif vs and not game_over:
                     if e.button == 1:
@@ -122,6 +135,7 @@ def main():
                         vs.reveal_square(row, col)
                         if vs.get_grid()[row][col] == -1:
                             game_over = True
+                            show_game_over_popup()
                         revealed = vs.get_revealed()
                     elif e.button == 3:
                         vs.flag_square(row, col)

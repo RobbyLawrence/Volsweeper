@@ -14,6 +14,7 @@ find_package(pybind11 REQUIRED)
 pybind11_add_module(volsweeper_binding
     bindings.cpp
     # point to your core logic .cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/botV1.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/volsweeper.cpp
 )
 
