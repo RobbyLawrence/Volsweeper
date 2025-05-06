@@ -1,7 +1,18 @@
 #include <iostream>
+#include <sstream>
 #include "volsweeper.hpp"
 
 int main(int argc, char* argv[]) {
+    std::stringstream ss;
+    ss << argv[1];
+    std::string flag;
+    ss >> flag;
+    if (flag == "-h") {
+        std::cout << "-------- Help Menu --------\n";
+        std::cout << "Allowed options: \"-tr\": generates a completely random board\n";
+        std::cout << "                 \"-r\" : generates a board that reserves initially clicked square and adjacent squares as safe\n";
+        std::cout << "                 \"-s\" : generates a board that is guaranteed to be solvable using basic rules\n";
+    }
     if (argc != 4) {
         std::cerr << "usage: ./volsweeper [FLAG] [SIZE] [NUM_MINES]\n";
         return 1;
@@ -63,7 +74,6 @@ int main(int argc, char* argv[]) {
     begingame:
     Minefield field = Minefield(argv[1], size, num_mines, std::make_pair(x,y));
     field.reveal_square(size-y,x-1);
-    field.debug_output_field();
     field.output_field();
     std::vector<std::pair<int,int> > b1_coord_vect;
     std::vector<std::pair<int,int> > b2_coord_vect;
@@ -146,7 +156,6 @@ int main(int argc, char* argv[]) {
             b2_coord_vect = B2(field);
             if (b1_coord_vect.size() > 0) {
                 std::cout << "Hint: You can flag the (" << b1_coord_vect[0].second + 1 << ", " << size - b1_coord_vect[0].first << ").\n";
-                b1_coord_vect.erase(b1_coord_vect.begin(),b1_coord_vect.begin() + 1);
             }
             else {
                 if (b2_coord_vect.size() > 0) {

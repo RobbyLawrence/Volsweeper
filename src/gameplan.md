@@ -13,5 +13,6 @@ We'll need to store the player's initially clicked square and adjacent squares a
 The squares in the vector of pairs will be excluded, and we'll sprinkle mines throughout this vector with the same method as before. Then, we'll have to read from this vector back into the grid. As we copy
 back into the grid vector (before we assign the non-mine squares their values) we make sure to check each square to see if it matches with an pair in safe_area. okay now go implement it.
 
-
-During the copy-in phase, we need to determine the
+# How am I going to do solvability?
+The core idea lies in moving the mines from undiscovered space to the frontier.
+how do we find the frontier? we'll go along the
