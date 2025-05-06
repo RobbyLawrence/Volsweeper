@@ -3,6 +3,10 @@
 #include <sstream>
 #include "volsweeper.hpp"
 
+#define GREEN1   "\033[32m"
+#define RESET   "\033[0m"
+
+
 int main(int argc, char* argv[]) {
     std::stringstream ss;
     ss << argv[1];
@@ -48,9 +52,9 @@ int main(int argc, char* argv[]) {
     bool game_over = false;
     for (size_t i = 0;i<size;i++) { // print the first board
         for (size_t j = 0;j<size;j++) {
-            std::cout << "X  ";
+            std::cout << GREEN1 << "X  ";
         }
-        std::cout << '\n';
+        std::cout << RESET <<'\n';
     }
     // collect first input
     std::cout << "What square would you like to reveal first? ";

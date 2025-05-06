@@ -5,6 +5,14 @@
 #include <string>
 #include <vector>
 
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN    "\033[36m"
+
 // decided not to use this hash function, but am keeping it just in case I need it
 struct Pair_Hash {
     std::size_t operator()(const std::pair<std::size_t,std::size_t>& p) const noexcept {
@@ -305,17 +313,17 @@ void Minefield::output_field() {
         for (int j = 0;j<size; j++) {
             if (revealed[i][j]) {
                 if (grid[i][j] == -1) {
-                    std::cout << "M  ";
+                    std::cout << RED << "M " << RESET << " ";
                 }
                 else {
-                    std::cout << grid[i][j] << "  ";
+                    std::cout << BLUE << grid[i][j] << "  " << RESET;
                 }
             }
             else if (!(revealed[i][j]) && flagged[i][j]) {
-                std::cout << "F  ";
+                std::cout << YELLOW << "F " << RESET << " ";
             }
             else {
-                std::cout << "X  ";
+                std::cout << GREEN << "X " << RESET << " ";
             }
         }
         std::cout << '\n';
