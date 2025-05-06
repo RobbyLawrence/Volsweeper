@@ -33,31 +33,43 @@ void mark_mines(Minefield& field, std::vector<std::pair<int, int>> neighbors) {
 }
 
 // B1 (If the number of the square is the same as the adjacent squares then all of the squares are mines)
-std::vector<std::pair<int,int> > B1(Minefield& f) {
+std::vector<std::pair<int,int>> B1(Minefield& f) {
     std::vector<std::pair<int,int>> to_flag;
 
-    for (int i = 0; i < f.size; ++i) {
-        for (int j = 0; j < f.size; ++j) {
-            if (!f.revealed[i][j] || f.grid[i][j] <= 0)
-                continue;
+    for (int i = 0; i < int(f.size); ++i) {
+      for (int j = 0; j < int(f.size); ++j) {
+        if (!f.revealed[i][j] || f.grid[i][j] <= 0)
+          continue;
 
-            // collect all *unrevealed & unflagged* neighbors
-            std::vector<std::pair<int,int>> cand;
-            for (int di = -1; di <= 1; ++di) {
-                for (int dj = -1; dj <= 1; ++dj) {
-                    if (di==0 && dj==0) continue;
-                    int ni = i+di, nj = j+dj;
-                    if (ni>=0 && ni<f.size && nj>=0 && nj<f.size
-                     && !f.revealed[ni][nj] && !f.flagged[ni][nj]) {
-                        cand.emplace_back(ni,nj);
-                    }
-                }
+        int clue = f.grid[i][j];
+        int flagged_count = 0;
+        std::vector<std::pair<int,int>> unopened;
+
+        // look at all eight neighbors
+        for (int di=-1; di<=1; ++di) {
+          for (int dj=-1; dj<=1; ++dj) {
+            if (di==0 && dj==0) continue;
+            int ni = i+di, nj = j+dj;
+            if (ni<0 || ni>=int(f.size) || nj<0 || nj>=int(f.size))
+              continue;
+
+            if (f.flagged[ni][nj]) {
+              ++flagged_count;
             }
-            // if exactly grid[i][j] of these remain, they must all be mines
-            if ((int)cand.size() == f.grid[i][j]) {
-                to_flag.insert(to_flag.end(), cand.begin(), cand.end());
+            else if (!f.revealed[ni][nj]) {
+              unopened.emplace_back(ni, nj);
             }
+          }
         }
+
+        int needed = clue - flagged_count;
+        if (needed > 0 && int(unopened.size()) == needed) {
+          // every unopened neighbor must be a mine
+          to_flag.insert(to_flag.end(),
+                         unopened.begin(),
+                         unopened.end());
+        }
+      }
     }
 
     return to_flag;
