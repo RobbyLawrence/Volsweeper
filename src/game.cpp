@@ -65,87 +65,105 @@ int main(int argc, char* argv[]) {
     field.reveal_square(size-y,x-1);
     field.debug_output_field();
     field.output_field();
+    std::vector<std::pair<int,int> > b1_coord_vect;
+    std::vector<std::pair<int,int> > b2_coord_vect;
     // the game functions with a big game loop.
-    //
     while (!game_over) {
         std::cout << "What action would you like to take? ";
         std::cin >> action;
 
         switch (action) {
-          case 'R': {
-            while (true) {
-              std::cout << "Enter \"R\" to reveal: ";
-              std::cin >> x_str >> y_str;
-              try {
-                x = std::stoi(x_str);
-                y = std::stoi(y_str);
-              } catch (...) {
-                std::cerr << "Invalid coordinates; try again.\n";
-                continue;
-              }
-              if (x >= 1 && x <= size && y >= 1 && y <= size) {
-                break;  // valid coordinate
-              }
-              std::cerr << "Coordinates out of range; must be 1–" << size << ".\n";
-            }
-            // convert to 0-based row/col
-            int row = size - y;
-            int col = x - 1;
-            if (field.revealed[row][col]) {
-              field.chord(row, col);
-            }
-            field.reveal_square(row, col);
-            field.output_field();
+            case 'R': {
+                while (true) {
+                    std::cout << "Enter \"x y\" to reveal: ";
+                    std::cin >> x_str >> y_str;
+                    try {
+                        x = std::stoi(x_str);
+                        y = std::stoi(y_str);
+                    } catch (...) {
+                        std::cerr << "Invalid coordinates; try again.\n";
+                        continue;
+                    }
+                    if (x >= 1 && x <= size && y >= 1 && y <= size) {
+                        break;  // valid coordinate
+                    }
+                    std::cerr << "Coordinates out of range; must be 1–" << size << ".\n";
+                }
+                // convert to 0-based row/col
+                int row = size - y;
+                int col = x - 1;
+                if (field.revealed[row][col]) {
+                    field.chord(row, col);
+                }
+                field.reveal_square(row, col);
+                field.output_field();
 
-            if (field.grid[row][col] == -1) {
-              std::cout << "You hit a mine!\n";
-              game_over = true;
-            }
-            break;
-          }
-
-          case 'F': {
-            while (true) {
-              std::cout << "Enter \"F\" to flag/unflag: ";
-              std::cin >> x_str >> y_str;
-              try {
-                x = std::stoi(x_str);
-                y = std::stoi(y_str);
-              } catch (...) {
-                std::cerr << "Invalid coordinates; try again.\n";
-                continue;
-              }
-              if (x >= 1 && x <= size && y >= 1 && y <= size) {
+                if (field.grid[row][col] == -1) {
+                    std::cout << "You hit a mine!\n";
+                    game_over = true;
+                }
                 break;
-              }
-              std::cerr << "Coordinates out of range; must be 1–"
-                        << size << ".\n";
             }
-            int row = size - y, col = x - 1;
-            if (field.flag_square(row, col)) {
-              placed_flags++;
+
+            case 'F': {
+                while (true) {
+                    std::cout << "Enter \"x y\" to flag/unflag: ";
+                    std::cin >> x_str >> y_str;
+                    try {
+                        x = std::stoi(x_str);
+                        y = std::stoi(y_str);
+                    } catch (...) {
+                        std::cerr << "Invalid coordinates; try again.\n";
+                        continue;
+                    }
+                    if (x >= 1 && x <= size && y >= 1 && y <= size) {
+                        break;
+                    }
+                    std::cerr << "Coordinates out of range; must be 1–"
+                    << size << ".\n";
+                }
+                int row = size - y, col = x - 1;
+                if (field.flag_square(row, col)) {
+                    placed_flags++;
+                }
+                field.output_field();
+                break;
             }
+            case 'M':
+            std::cout
+            << "Possible actions:\n"
+            << "  P - print the board\n"
+            << "  R - reveal a square\n"
+            << "  F - flag/unflag a square\n"
+            << "  H - give a hint"
+            << "  M - show this menu\n";
+            break;
+            case 'P':
             field.output_field();
             break;
-          }
-
-          case 'H':
-            std::cout
-              << "Possible actions:\n"
-              << "  R – reveal a square\n"
-              << "  F – flag/unflag a square\n"
-              << "  H – show this menu\n";
+            case 'H':
+            b1_coord_vect = B1(field);
+            b2_coord_vect = B2(field);
+            if (b1_coord_vect.size() > 0) {
+                std::cout << "Hint: You can flag the (" << b1_coord_vect[0].second + 1 << ", " << size - b1_coord_vect[0].first << ").\n";
+                b1_coord_vect.erase(b1_coord_vect.begin(),b1_coord_vect.begin() + 1);
+            }
+            else {
+                if (b2_coord_vect.size() > 0) {
+                    std::cout << "Hint: You can reveal the (" << b2_coord_vect[0].second + 1 << ", " << size - b2_coord_vect[0].first << ").\n";
+                }
+            }
+            b1_coord_vect.clear();
+            b2_coord_vect.clear();
             break;
-
-          default:
+            default:
             std::cout << "Unknown action. Type H for help.\n";
         }
 
         // call check_status exactly once
         if (check_status(field)) {
-          game_over = true;
+            game_over = true;
         }
     }
-
     return 0;
 }
