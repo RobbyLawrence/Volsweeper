@@ -65,12 +65,14 @@ Robby
 Total Hours: 
 
 Matthew
-3/31 Started GUI research (3 hours)
+3/31 Started GUI research (4 hours)
 4/15 Decided to use python’s Pygame and began learning basics (4 hours)
 4/22 Got the board base in the GUI (4 hours)
-5/4 Added in the flag counter, flagging, and timer (3 hours)
-
-Total Hours: 
+4/28 Built a board that had numbers, bombs, and exited when a bomb was clicked(3 hours)
+5/1  Worked on board generation that allowed board to be solvable, didn't get a working product (4 hours)
+5/4  Added in the flag counter, flagging, and timer (3 hours)
+5/5  Added flag image, board generation that opens board off of first click and opens multiple squares (6 hours)
+Total Hours: 28 
 
 Hien
 

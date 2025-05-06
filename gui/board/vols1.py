@@ -1,158 +1,179 @@
 #!/usr/bin/env python3
-import sys
-import os
-import time
+import sys, os, time
+import tkinter as tk
+from tkinter import messagebox
 
-# —————————————————————————————
-# 1) Make sure Python can find your compiled extension:
+# 1) Make sure Python can find the compiled extension
 script_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir  = os.path.join(script_dir, "build")
 sys.path.insert(0, build_dir)
-# —————————————————————————————
 
 import pygame
 import volsweeper_binding as vb
 
-# —————————————————————————————
 # 2) Board & UI parameters
-WIDTH, HEIGHT, MINES = 10, 10, 20
-CELL_SIZE = 80
-HEADER_HEIGHT = 30  # space for timer and flag count
-FPS = 30           # frames per second for updates
-# —————————————————————————————
+WIDTH, HEIGHT, MINES       = 10, 10, 20
+CELL_SIZE, HEADER_HEIGHT   = 80, 30
+FPS                        = 30
+HINT_BUTTON_WIDTH          = 120
+HINT_BUTTON_HEIGHT         = 40
+HINT_BUTTON_COLOR          = (255, 165, 0)
+HINT_BUTTON_TEXT           = "Hint"
 
-# —————————————————————————————
 # 3) Color palette
-BG_COLOR        = (255, 255, 255)  # white background
-UNREVEALED_COLOR= (200, 200, 200)  # light grey for covered tiles
-REVEALED_COLOR  = (240, 240, 240)  # very light grey for opened tiles
-BORDER_COLOR    = (0, 0, 0)        # black border
-ACCENT_COLOR    = (255, 165, 0)    # orange accent
-TEXT_COLOR      = (0, 0, 0)        # black text/numbers
-MINE_COLOR      = (255, 0, 0)      # red mines
-# —————————————————————————————
-
+BG_COLOR         = (255,255,255)
+UNREVEALED_COLOR = (200,200,200)
+REVEALED_COLOR   = (240,240,240)
+ACCENT_COLOR     = (255,165,0)
+BORDER_COLOR     = (  0,  0,  0)
+TEXT_COLOR       = (  0,  0,  0)
+MINE_COLOR       = (255,  0,  0)
+HINT_FLAG_COLOR  = (255,255,150)
 
 def load_flag_image(path="volsFlag.jpg"):
-    """
-    Load and scale the flag icon to CELL_SIZE.
-    """
     img = pygame.image.load(path).convert_alpha()
     return pygame.transform.scale(img, (CELL_SIZE, CELL_SIZE))
 
-
-def draw_board(screen, font, grid, revealed, flags, flag_img, elapsed_time):
-    """
-    Render the Minesweeper board with timer and flag counter, styled like classic Minesweeper.
-    """
-    # Fill overall background
+def draw_board(screen, font, grid, revealed, flags, flag_img,
+               elapsed_time, hint_button_rect, hinted_flags):
     screen.fill(BG_COLOR)
-
-    # Draw timer at top-left
-    timer_txt = font.render(f"Time: {int(elapsed_time)}s", True, TEXT_COLOR)
-    screen.blit(timer_txt, (5, 5))
-
-    # Draw flag counter at top-right
-    flag_txt = font.render(f"Flags: {len(flags)}/{MINES}", True, TEXT_COLOR)
-    screen_width = WIDTH * CELL_SIZE
-    flag_rect = flag_txt.get_rect(topright=(screen_width - 5, 5))
-    screen.blit(flag_txt, flag_rect)
-
-    # Draw tiles
+    # Timer
+    screen.blit(font.render(f"Time: {int(elapsed_time)}s", True, TEXT_COLOR), (5,5))
+    # Flag count
+    ft = font.render(f"Flags: {len(flags)}/{MINES}", True, TEXT_COLOR)
+    screen.blit(ft, ft.get_rect(topright=(WIDTH*CELL_SIZE-5,5)))
+    # Cells
     for y in range(HEIGHT):
         for x in range(WIDTH):
-            rect = pygame.Rect(
-                x * CELL_SIZE,
-                y * CELL_SIZE + HEADER_HEIGHT,
-                CELL_SIZE,
-                CELL_SIZE
-            )
-            # choose fill color
-            if revealed[y][x]:
-                pygame.draw.rect(screen, REVEALED_COLOR, rect)
-            else:
-                pygame.draw.rect(screen, UNREVEALED_COLOR, rect)
-
-            # accent border shading: top-left highlight, bottom-right shadow
-            pygame.draw.line(screen, BG_COLOR, rect.topleft, rect.topright, 2)
-            pygame.draw.line(screen, BG_COLOR, rect.topleft, rect.bottomleft, 2)
+            rect = pygame.Rect(x*CELL_SIZE,
+                               y*CELL_SIZE+HEADER_HEIGHT,
+                               CELL_SIZE, CELL_SIZE)
+            col = REVEALED_COLOR if revealed[y][x] else UNREVEALED_COLOR
+            pygame.draw.rect(screen, col, rect)
+            # 3D border
+            pygame.draw.line(screen, BG_COLOR,     rect.topleft, rect.topright,    2)
+            pygame.draw.line(screen, BG_COLOR,     rect.topleft, rect.bottomleft,  2)
             pygame.draw.line(screen, ACCENT_COLOR, rect.bottomleft, rect.bottomright, 2)
-            pygame.draw.line(screen, ACCENT_COLOR, rect.topright, rect.bottomright, 2)
-
-            # inner border
+            pygame.draw.line(screen, ACCENT_COLOR, rect.topright,   rect.bottomright, 2)
             pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
 
-            # draw content
             if revealed[y][x]:
-                val = grid[y][x]
-                if val == -1:
-                    pygame.draw.circle(screen, MINE_COLOR, rect.center, CELL_SIZE // 4)
-                elif val > 0:
-                    txt = font.render(str(val), True, TEXT_COLOR)
+                v = grid[y][x]
+                if v == -1:
+                    pygame.draw.circle(screen, MINE_COLOR, rect.center, CELL_SIZE//4)
+                elif v > 0:
+                    txt = font.render(str(v), True, TEXT_COLOR)
                     screen.blit(txt, txt.get_rect(center=rect.center))
-            elif (y, x) in flags:
+            elif (y,x) in flags:
+                if (y,x) in hinted_flags:
+                    pygame.draw.rect(screen, HINT_FLAG_COLOR, rect)
                 screen.blit(flag_img, rect.topleft)
+
+    # Hint button
+    pygame.draw.rect(screen, HINT_BUTTON_COLOR, hint_button_rect)
+    bt = font.render(HINT_BUTTON_TEXT, True, TEXT_COLOR)
+    screen.blit(bt, bt.get_rect(center=hint_button_rect.center))
 
     pygame.display.flip()
 
+def show_game_over_popup():
+    pygame.quit()
+    root = tk.Tk(); root.withdraw()
+    res = messagebox.askquestion("Game Over",
+                                 "You hit a mine!\nRestart or quit?",
+                                 icon='warning')
+    if res == 'yes':
+        os.execl(sys.executable, sys.executable, *sys.argv)
+    else:
+        sys.exit()
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((WIDTH * CELL_SIZE, HEIGHT * CELL_SIZE + HEADER_HEIGHT))
+    screen = pygame.display.set_mode((WIDTH*CELL_SIZE,
+                                      HEIGHT*CELL_SIZE+HEADER_HEIGHT))
     pygame.display.set_caption("VolSweeper GUI")
-    font = pygame.font.SysFont('Arial', 24, bold=True)
+    font  = pygame.font.SysFont('Arial',24,bold=True)
     clock = pygame.time.Clock()
-
     flag_img = load_flag_image()
-    vs = vb.Minefield("-r", WIDTH, MINES)
-    grid = vs.get_grid()
-    revealed = vs.get_revealed()
-    flags = set()
 
-    start_time = None
+    vs           = None
+    grid         = [[0]*WIDTH for _ in range(HEIGHT)]
+    revealed     = [[False]*WIDTH for _ in range(HEIGHT)]
+    flags        = set()
+    hinted_flags = set()
+    start_time   = None
     elapsed_time = 0
-    game_over = False
+    game_over    = False
 
-    draw_board(screen, font, grid, revealed, flags, flag_img, elapsed_time)
+    hint_button_rect = pygame.Rect(
+        WIDTH*CELL_SIZE - HINT_BUTTON_WIDTH - 10,
+        HEIGHT*CELL_SIZE + HEADER_HEIGHT - HINT_BUTTON_HEIGHT - 5,
+        HINT_BUTTON_WIDTH,
+        HINT_BUTTON_HEIGHT
+    )
 
-    running = True
-    while running:
+    draw_board(screen, font, grid, revealed, flags, flag_img,
+               elapsed_time, hint_button_rect, hinted_flags)
+
+    while True:
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                return
 
-            elif e.type == pygame.MOUSEBUTTONDOWN:
+            if e.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = e.pos
-                col, row = mx // CELL_SIZE, (my - HEADER_HEIGHT) // CELL_SIZE
-                if row < 0 or row >= HEIGHT:
+
+                # Hint button
+                if hint_button_rect.collidepoint(mx, my) and vs and not game_over:
+                    hint = vs.pattern_recognition()
+                    if hint != (-1,-1):
+                        r, c = hint
+                        flags.add((r, c))
+                        hinted_flags = {(r, c)}
                     continue
 
-                if start_time is None:
+                # Board click
+                cx = mx // CELL_SIZE
+                cy = (my - HEADER_HEIGHT) // CELL_SIZE
+                if not (0 <= cy < HEIGHT and 0 <= cx < WIDTH):
+                    continue
+
+                # ─── First click: generate around this tile, flood-fill
+                if e.button == 1 and vs is None:
+                    # PASS (col+1, HEIGHT-row) into C++ constructor
+                    vs = vb.Minefield("-r", WIDTH, MINES, (cx+1, HEIGHT-cy))
+                    vs.reveal_square(cy, cx)     # flood fill zeros
+                    grid     = vs.get_grid()
+                    revealed = vs.get_revealed()
                     start_time = time.time()
 
-                if e.button == 1:
-                    vs.reveal_square(row, col)
-                    if vs.get_grid()[row][col] == -1:
-                        game_over = True
-                elif e.button == 3 and not game_over:
-                    vs.flag_square(row, col)
-                    coord = (row, col)
-                    if coord in flags:
-                        flags.remove(coord)
-                    else:
-                        flags.add(coord)
+                # ─── Subsequent clicks
+                elif vs and not game_over:
+                    if e.button == 1:
+                        if revealed[cy][cx]:
+                            vs.chord(cy, cx)
+                        vs.reveal_square(cy, cx)
+                        if vs.get_grid()[cy][cx] == -1:
+                            game_over = True
+                            show_game_over_popup()
+                        revealed = vs.get_revealed()
+                    elif e.button == 3:
+                        vs.flag_square(cy, cx)
+                        if (cy, cx) in flags:
+                            flags.remove((cy, cx))
+                        else:
+                            flags.add((cy, cx))
 
-                grid = vs.get_grid()
-                revealed = vs.get_revealed()
+                    grid = vs.get_grid()
 
-        if start_time is not None and not game_over:
+        # Timer update
+        if start_time and not game_over:
             elapsed_time = time.time() - start_time
 
-        draw_board(screen, font, grid, revealed, flags, flag_img, elapsed_time)
+        draw_board(screen, font, grid, revealed, flags, flag_img,
+                   elapsed_time, hint_button_rect, hinted_flags)
         clock.tick(FPS)
-
-    pygame.quit()
-
 
 if __name__ == "__main__":
     main()
