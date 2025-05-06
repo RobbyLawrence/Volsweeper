@@ -75,6 +75,13 @@ Matthew
 Total Hours: 28 
 
 Hien
+3/31 Expertimenting with graphic libraries like SFML and SDL (5 hours)
+4/18 Researchng all of common minesweeper patterns (2 hours)
+4/25 Work on B1 & B2 patterns (5 hours)
+4/27 Continue working on the patterns implementation (6 hours)
+5/4 Developing ways to implement pattern 1-2-2-1 and 1-2 for bot (7 hours)
+5/5 Polishing code and work on user manual (2 hours)
 
-Total Hours:
+
+Total Hours: 27
 
