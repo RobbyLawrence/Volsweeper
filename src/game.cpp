@@ -1,7 +1,23 @@
+#include <cinttypes>
 #include <iostream>
+#include <sstream>
 #include "volsweeper.hpp"
 
+#define GREEN1   "\033[32m"
+#define RESET   "\033[0m"
+
+
 int main(int argc, char* argv[]) {
+    std::stringstream ss;
+    ss << argv[1];
+    std::string flag;
+    ss >> flag;
+    if (flag == "-h") {
+        std::cout << "-------- Help Menu --------\n";
+        std::cout << "Allowed options: \"-tr\": generates a completely random board\n";
+        std::cout << "                 \"-r\" : generates a board that reserves initially clicked square and adjacent squares as safe\n";
+        std::cout << "                 \"-s\" : generates a board that is guaranteed to be solvable using basic rules\n";
+    }
     if (argc != 4) {
         std::cerr << "usage: ./volsweeper [FLAG] [SIZE] [NUM_MINES]\n";
         return 1;
@@ -36,9 +52,9 @@ int main(int argc, char* argv[]) {
     bool game_over = false;
     for (size_t i = 0;i<size;i++) { // print the first board
         for (size_t j = 0;j<size;j++) {
-            std::cout << "X  ";
+            std::cout << GREEN1 << "X  ";
         }
-        std::cout << '\n';
+        std::cout << RESET <<'\n';
     }
     // collect first input
     std::cout << "What square would you like to reveal first? ";
@@ -135,7 +151,7 @@ int main(int argc, char* argv[]) {
             << "  P - print the board\n"
             << "  R - reveal a square\n"
             << "  F - flag/unflag a square\n"
-            << "  H - give a hint"
+            << "  H - give a hint\n"
             << "  M - show this menu\n";
             break;
             case 'P':
@@ -144,14 +160,14 @@ int main(int argc, char* argv[]) {
             case 'H':
             b1_coord_vect = B1(field);
             b2_coord_vect = B2(field);
-            if (b1_coord_vect.size() > 0) {
+            if (!b1_coord_vect.empty()) {
                 std::cout << "Hint: You can flag the (" << b1_coord_vect[0].second + 1 << ", " << size - b1_coord_vect[0].first << ").\n";
-                b1_coord_vect.erase(b1_coord_vect.begin(),b1_coord_vect.begin() + 1);
             }
-            else {
-                if (b2_coord_vect.size() > 0) {
-                    std::cout << "Hint: You can reveal the (" << b2_coord_vect[0].second + 1 << ", " << size - b2_coord_vect[0].first << ").\n";
-                }
+            else if (!b2_coord_vect.empty()) {
+                std::cout << "Hint: You can reveal the (" << b2_coord_vect[0].second + 1 << ", " << size - b2_coord_vect[0].first << ").\n";
+            }
+            if (b1_coord_vect.empty() && b2_coord_vect.empty()) {
+                std::cout << "No available hints! Sorry!\n";
             }
             b1_coord_vect.clear();
             b2_coord_vect.clear();
