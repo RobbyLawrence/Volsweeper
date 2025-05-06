@@ -1,0 +1,78 @@
+
+--------------
+Group Meetings
+--------------
+
+Date: March 26
+Meeting Details: Started project with initial goals, different assignments were given to members, Robby would start 
+with the board generation, Brett and Hien on the bot, and Matthew on the GUI.
+Members there: Brett, Robby, Matthew, Hien
+
+Date: April 13
+Meeting Details: Was the check in before our first progress report was due. Discussed mainly how we were using Cmake to compile 
+our code, instead of a makefile. Everyone worked on their respective parts of the assignment and shared progress made so far.
+Members there: Brett, Robby, Matthew, Hien
+
+Date: April 15
+Meeting Details: In class work day, the main highlight was Matthew showing us his progress on the GUI where 
+he determined that he was using Python’s Pygame.
+Members there: Brett, Robby, Matthew, Hien
+
+Date: April 21
+Meeting Details: Check in before progress report number two. The main highlight of this session was Robby explaining the 
+challenges of the board generation and showing us how there has been extensive research done in order to try to 
+solve the problem of creating a 100 percent solvable minesweeper board.
+Members there: Brett, Robby, Matthew, Hien
+
+Date: April 26
+Meeting Details: Group meeting to show progress, Robby had decided on the method he was going to choose to make the 
+board, and Brett and Hien displayed their progress on the bot so far.
+Members there: Brett, Robby, Matthew, Hien
+
+Date: April 30
+Meeting Details: Made the slides for the presentation in class.
+Members there: Brett, Robby, Matthew, Hien
+
+Date: May 4
+Meeting Details: Working on a final push for the demo day. Working on polishing the bot and making the game playable.
+Members there: Brett, Robby
+
+Date: May 5
+Meeting Details: Final push to complete the project. Last thing to do is link together the terminal version of the 
+game, and GUI version together.
+Members there: Brett, Robby, Matthew, Hien
+
+
+---------------------
+Individual Time Logs
+---------------------
+
+Brett
+3/31 Started working on bot (3 hours) 
+4/25 Started to implement different bot patterns (3 hours)
+4/28 Got the B1 pattern working (5 hours)
+4/29 Got the B2 pattern functional (5 hours)
+5/4 Polishing the bot and working on other patterns (6 hours)
+5/5 Working on finishing up the bot for compatibility with board generator and GUI (6 hours)
+
+Total Hours: 28
+
+Robby
+3/31 Started research for board generation (3 hours)
+4/15 Implemented square revealing in board (5 hours)
+4/30 Added flagging implementation (4 hours)
+
+Total Hours: 
+
+Matthew
+3/31 Started GUI research (3 hours)
+4/15 Decided to use python’s Pygame and began learning basics (4 hours)
+4/22 Got the board base in the GUI (4 hours)
+5/4 Added in the flag counter, flagging, and timer (3 hours)
+
+Total Hours: 
+
+Hien
+
+Total Hours:
+
