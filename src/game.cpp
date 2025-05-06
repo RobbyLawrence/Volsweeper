@@ -6,7 +6,6 @@
 #define GREEN1   "\033[32m"
 #define RESET   "\033[0m"
 
-
 int main(int argc, char* argv[]) {
     std::stringstream ss;
     ss << argv[1];
