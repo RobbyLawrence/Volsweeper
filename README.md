@@ -8,7 +8,7 @@ This program should open in a window, and allow the user to interact with the pr
 We're aiming to create a program that can also play the game by providing the user with the most optimal move
 given a minefield. A common pitfall in Minesweeper implementations is that the player isn't guaranteed to click a good starting square. We've fixed this by generating the board after the player clicks on their first square, ensuring that square is safe, as well as all adjacent squares. Finally, we'd like to implement an algorithm that generates minefields that can be solved without
 guessing.
-After much deliberation
+After much deliberation, we decided that it was infeasible to implement solvable boards. The algorithm designed to handle the generation would work, but we'd require a more fleshed out bot for the algorithm to run faster than the simplest solvable board generator you can think of.
 
 One thing that we have implemented in our minesweeper version that is different than the standard version is that we have implemented a "hint" button. What this button will do is show you the next possible safe move. We have programmed patterns off of the official
 minesweeper website. The main two that we will be using are called "B1" and "B2". B1 will flag an unopened square as a mine
