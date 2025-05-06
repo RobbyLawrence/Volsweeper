@@ -1,3 +1,4 @@
+#include <cinttypes>
 #include <iostream>
 #include <sstream>
 #include "volsweeper.hpp"
@@ -146,7 +147,7 @@ int main(int argc, char* argv[]) {
             << "  P - print the board\n"
             << "  R - reveal a square\n"
             << "  F - flag/unflag a square\n"
-            << "  H - give a hint"
+            << "  H - give a hint\n"
             << "  M - show this menu\n";
             break;
             case 'P':
@@ -160,6 +161,9 @@ int main(int argc, char* argv[]) {
             }
             else if (!b2_coord_vect.empty()) {
                 std::cout << "Hint: You can reveal the (" << b2_coord_vect[0].second + 1 << ", " << size - b2_coord_vect[0].first << ").\n";
+            }
+            if (b1_coord_vect.empty() && b2_coord_vect.empty()) {
+                std::cout << "No available hints! Sorry!\n";
             }
             b1_coord_vect.clear();
             b2_coord_vect.clear();
