@@ -78,7 +78,6 @@ int main(int argc, char* argv[]) {
     begingame:
     Minefield field = Minefield(argv[1], size, num_mines, std::make_pair(x,y));
     field.reveal_square(size-y,x-1);
-    field.debug_output_field();
     field.output_field();
     std::vector<std::pair<int,int> > b1_coord_vect;
     std::vector<std::pair<int,int> > b2_coord_vect;
