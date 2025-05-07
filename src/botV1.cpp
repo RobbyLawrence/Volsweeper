@@ -120,3 +120,19 @@ std::vector<std::pair<int,int> > B2(Minefield& field) {
     }
     return revealable;
 }
+
+std::pair<int, int> pattern_recognition(Minefield& field) {
+    // try B1 first
+    std::vector<std::pair<int, int>> v1 = B1(field);
+    if (!v1.empty()) {
+        return v1[0];
+    }
+    // try B2 is f1 no good  
+    std::vector<std::pair<int,int>> v2 = B2(field); 
+    if (!v2.empty()) {
+        return v2[0];
+    }
+    // 3) Nothing found
+    return std::make_pair(-1, -1);
+}
+

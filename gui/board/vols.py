@@ -138,6 +138,7 @@ def main():
                 # Hint button
                 if hint_button_rect.collidepoint(mx, my) and vs and not game_over:
                     hint = vs.pattern_recognition()
+                    #hint = vs.B1()
                     if hint != (-1,-1):
                         r, c = hint
                         flags.add((r, c))
